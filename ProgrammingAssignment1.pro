@@ -16,7 +16,8 @@ SOURCES += main.cpp\
         mainwindow.cpp
 
 HEADERS  += mainwindow.h \
-    mdiChild.h
+    mdiChild.h \
+    ImageEffects.h
 
 FORMS    += mainwindow.ui
 
