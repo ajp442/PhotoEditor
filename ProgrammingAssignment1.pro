@@ -13,12 +13,15 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    image.cpp
 
 HEADERS  += mainwindow.h \
     mdiChild.h \
-    ImageEffects.h
+    image.h
 
 FORMS    += mainwindow.ui
 
 RESOURCES = ProgrammingAssignment1.qrc
+
+CONFIG += CONSOLE
