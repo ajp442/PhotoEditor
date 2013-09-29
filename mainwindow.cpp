@@ -6,7 +6,6 @@
 #include <QScrollArea>
 #include <QMdiSubWindow>
 #include "image.h"
-#include "ImageEffects.h"
 #include <QRgb>
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -201,43 +200,48 @@ bool AdjustBrightness( QImage &image, int brightnessLevel = 25)
  *                    lower and upper bound.
  *
  * @param[in] Image &image - The image to be manipulated.
+ * @param[in] int lower - The lowest value the contrast can be
+ * @param[in] int upper - The highest value the contrast can be
  *
  * @returns true  - The image contrast was successfully computed.
  *          false - The function end prematurely, due to an error.
  *******************************************************************/
-/*
 bool Contrast(QImage &image, int lower = 0, int upper = 255)
 {
-    int left = 0;     //Left bound of contrast
-    int right = 255;  //Right bound of contrast
-
     //If there is no image selected, exit the function.
     //This could prevent crashes when trying to reference an
     //image that doesn't exist and also saves time by eliminating
     //computations.
-    if(image.IsNull())
+    if(image.isNull())
+        return false;
+
+    if(upper < lower)
         return false;
 
     //Progress through every single pixel starting at the top left
     //and reading left to right, top on down
     //Change each pixel's brightness based off the contrast transformation
     //function
-    for(int r = 0; r < int(image.Height()); r++)
-        for(int c = 0; c < int(image.Width()); c++)
+    for(int r = 0; r < int(image.width()); r++)
+        for(int c = 0; c < int(image.height()); c++)
         {
-            if(current < left)
-                return 0;
-            else if(current > right)
-                return 255;
-            else
-                return (( current - left ) * 256.0 / (right - left) + 0.5);
+           QRgb pixel = image.pixel(r,c);
+           int red = (qRed(pixel) - lower) * 256.0 / (upper - lower) + 0.5;
+           int green = (qGreen(pixel) - lower) * 256.0 / (upper - lower) + 0.5;
+           int blue = (qBlue(pixel) - lower) * 256.0 / (upper - lower) + 0.5;
+
+           //Verify rgb is within 0 to 255
+           red = (red < 0) ? 0 : (red > 255) ? 255 : red;
+           green = (green < 0) ? 0 : (green > 255) ? 255 : green;
+           blue = (blue < 0) ? 0 : (blue > 255) ? 255 : blue;
+
+           image.setPixel(r,c, qRgb(red, green, blue));
         }
-            image[r][c] = contrast_transformation(left, right, image[r][c]);
 
     //Exit the function successfully
     return true;
 }
-*/
+
 
 //I'm using this function to test various image processing functions.
 QPixmap ManipulateImage(QPixmap &pixmap)
@@ -247,6 +251,7 @@ QPixmap ManipulateImage(QPixmap &pixmap)
     //Negate(qimage);
     //Posterize(qimage);
     //AdjustBrightness(qimage);
+    Contrast(qimage, 40, 100);
     return QPixmap::fromImage(qimage);
 }
 
@@ -257,8 +262,8 @@ void MainWindow::OpenFile()
                                                      "",
                                                     tr("Files (*.*)"));
     QLabel *label = new QLabel;
-    //label->setPixmap(QPixmap(fileName));
-    label->setPixmap(ManipulateImage(QPixmap(fileName)));
+    label->setPixmap(QPixmap(fileName));
+    //label->setPixmap(ManipulateImage(QPixmap(fileName)));
     label->show();
     QScrollArea *scrollArea = new QScrollArea;
     scrollArea->setWidget(label);
