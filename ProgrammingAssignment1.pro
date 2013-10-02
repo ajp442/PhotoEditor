@@ -17,12 +17,8 @@ SOURCES += main.cpp\
     image.cpp
 
 HEADERS  += mainwindow.h \
-<<<<<<< HEAD
     mdiChild.h
-=======
-    mdiChild.h \
     image.h
->>>>>>> 6ef3425d8cac56ab9cb87e7dc511bc0fbd33819c
 
 FORMS    += mainwindow.ui
 
