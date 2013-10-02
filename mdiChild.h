@@ -11,6 +11,6 @@ public:
 private slots:
 private:
 
-}
+};
 
 #endif // MDICHILD_H
