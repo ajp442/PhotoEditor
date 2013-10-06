@@ -1,3 +1,13 @@
+/**************************************************************************//**
+ * @file
+ *
+ * @brief MainWindow class is used for the first gui layer that the user sees.
+ *
+ * This class creates an object that directs all user input to its
+ * appropriate functions.
+ *
+ *****************************************************************************/
+
 /****************************************************************************
 **
 ** Copyright (C) 2013 Digia Plc and/or its subsidiary(-ies).

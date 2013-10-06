@@ -1,3 +1,9 @@
+/**************************************************************************//**
+ * @file
+ *
+ * @brief MainWindow implementation.
+ *****************************************************************************/
+
 /****************************************************************************
 **
 ** Copyright (C) 2013 Digia Plc and/or its subsidiary(-ies).
@@ -45,10 +51,7 @@
 #include "mainwindow.h"
 #include "mdichild.h"
 
-/**************************************************************************//**
- * @brief Constructor, creates all the menus, toolbars, actions,
- * status bars, title, etc.
- *****************************************************************************/
+
 MainWindow::MainWindow()
 {
     mdiArea = new QMdiArea;

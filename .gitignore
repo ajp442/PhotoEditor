@@ -14,3 +14,7 @@
 
 # User preferences for qt creator
 *.pro.user
+
+# Doxygen
+Doxyfile
+html/

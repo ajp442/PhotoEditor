@@ -1,3 +1,14 @@
+/**************************************************************************//**
+ * @file
+ *
+ * @brief MdiChild class is used to create objects that act subwindows
+ * for the QMdiArea.
+ *
+ * This class creates objects which can save and load QPixmaps onto a QLabel.
+ * Objects derived from this class can also perform basic image manipulation.
+ *
+ *****************************************************************************/
+
 /****************************************************************************
 **
 ** Copyright (C) 2013 Digia Plc and/or its subsidiary(-ies).
