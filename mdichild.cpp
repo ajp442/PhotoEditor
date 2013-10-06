@@ -50,6 +50,16 @@ MdiChild::MdiChild()
 
 }
 
+MdiChild::~MdiChild()
+{
+}
+
+/**************************************************************************//**
+ * @brief Sets up an "blank" MdiChild.
+ *
+ * @todo Right now all it does is gives it a default name. It will error if
+ * you try to save it since there is no pixmap.
+ *****************************************************************************/
 void MdiChild::newFile()
 {
     static int sequenceNumber = 1;
@@ -60,6 +70,14 @@ void MdiChild::newFile()
     setModified();
 }
 
+/**************************************************************************//**
+ * @brief Loads an image into the QPixmap and adds it to the QLabel.
+ *
+ * @param[in] fileName - The name of the file to load.
+ *
+ * @returns false - Empty filename or faild to load image.
+ * @returns true - Successfully loaded image.
+ *****************************************************************************/
 bool MdiChild::loadFile(const QString &fileName)
 {
 
@@ -67,25 +85,28 @@ bool MdiChild::loadFile(const QString &fileName)
     if (!fileName.isEmpty()) {
         image.load(fileName);
         if (image.isNull()) {
-            QMessageBox::information(this, tr("Image Viewer"),
-                                     tr("Cannot load %1").arg(fileName));
+            QMessageBox::information(this, tr("Image Viewer"), tr("Cannot load %1").arg(fileName));
             return false;
         }
 
-    imageLabel = new QLabel;
-    imageLabel->setPixmap(image);
-    setBackgroundRole(QPalette::Dark);
-    setWidget(imageLabel);
+        imageLabel = new QLabel;
+        imageLabel->setPixmap(image);
+        setBackgroundRole(QPalette::Dark);
+        setWidget(imageLabel);
 
-    scaleFactor = 1.0;
-    qDebug() << fileName;
-    setCurrentFile(fileName);
-//    connect(document(), SIGNAL(contentsChanged()), this, SLOT(documentWasModified()));
-    return true;
+        scaleFactor = 1.0;
+        setCurrentFile(fileName);
+        return true;
     }
     return false;
 }
 
+/**************************************************************************//**
+ * @brief Saves the current image.
+ *
+ * @returns false - Unsucessful save.
+ * @returns true - Successful save.
+ *****************************************************************************/
 bool MdiChild::save()
 {
     if (isUntitled) {
@@ -97,6 +118,13 @@ bool MdiChild::save()
     return false;
 }
 
+
+/**************************************************************************//**
+ * @brief Prompts the user for a file location and name. Then saves.
+ *
+ * @returns false - Unsucessful save.
+ * @returns true - Successful save.
+ *****************************************************************************/
 bool MdiChild::saveAs()
 {
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save As"), curFile);
@@ -109,6 +137,15 @@ bool MdiChild::saveAs()
     return saveFile(fileName);
 }
 
+
+/**************************************************************************//**
+ * @brief Saves the current pixmap.
+ *
+ * @param[in] fileName - The name of the file to save.
+ *
+ * @returns false - Unsucessful save.
+ * @returns true - Successful save.
+ *****************************************************************************/
 bool MdiChild::saveFile(const QString &fileName)
 {
     if (!image.save(fileName)){
@@ -119,11 +156,20 @@ bool MdiChild::saveFile(const QString &fileName)
     return true;
 }
 
+/**************************************************************************//**
+ * @brief Returns the stripped name of the file, used for display purposes.
+ * @returns The stripped name of the file.
+ *****************************************************************************/
 QString MdiChild::userFriendlyCurrentFile()
 {
     return strippedName(curFile);
 }
 
+
+/**************************************************************************//**
+ * @brief Handles when a MdiChild window is closed. If nesicery it will
+ * prompt the user if they want to save, discard, or cancle.
+ *****************************************************************************/
 void MdiChild::closeEvent(QCloseEvent *event)
 {
     if (maybeSave()) {
@@ -133,11 +179,12 @@ void MdiChild::closeEvent(QCloseEvent *event)
     }
 }
 
-void MdiChild::documentWasModified()
-{
-//    setWindowModified(document()->isModified());
-}
-
+/**************************************************************************//**
+ * @brief Prompts the user if they want to save, discard, or cancle.
+ *
+ * @returns true - Already saved, or saved successfuly.
+ * @returns false - Cancle was selected.
+ *****************************************************************************/
 bool MdiChild::maybeSave()
 {
     if (isModified()) {
@@ -157,6 +204,12 @@ bool MdiChild::maybeSave()
     return true;
 }
 
+
+/**************************************************************************//**
+ * @brief Sets the current file, and titles the window appropriately.
+ *
+ * @param[in] fileName - Name/path of the file.
+ *****************************************************************************/
 void MdiChild::setCurrentFile(const QString &fileName)
 {
     //curFile = QFileInfo(fileName).canonicalFilePath();
@@ -167,10 +220,15 @@ void MdiChild::setCurrentFile(const QString &fileName)
     setWindowTitle(userFriendlyCurrentFile() + "[*]");
 }
 
+/**************************************************************************//**
+ * @brief Returns the stripped name of the file, used for display purposes.
+ * @returns The stripped name of the file.
+ *****************************************************************************/
 QString MdiChild::strippedName(const QString &fullFileName)
 {
     return QFileInfo(fullFileName).fileName();
 }
+
 
 bool MdiChild::grayScale()
 {
@@ -182,11 +240,21 @@ bool MdiChild::grayScale()
     setModified();
 }
 
+/**************************************************************************//**
+ * @brief Sets the modified flag that indicates if the image has been modified.
+ * @param[in] changed - A flag indicating if the document has been changed.
+ *****************************************************************************/
 void MdiChild::setModified(bool changed)
 {
     modified = changed;
 }
 
+/**************************************************************************//**
+ * @brief Returns whether or not the image has been modified.
+ *
+ * @returns true - The image has been modified.
+ * @returns false - The image has not been modified.
+ *****************************************************************************/
 bool MdiChild::isModified()
 {
     return modified;

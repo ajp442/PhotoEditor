@@ -45,7 +45,10 @@
 #include "mainwindow.h"
 #include "mdichild.h"
 
-
+/**************************************************************************//**
+ * @brief Constructor, creates all the menus, toolbars, actions,
+ * status bars, title, etc.
+ *****************************************************************************/
 MainWindow::MainWindow()
 {
     mdiArea = new QMdiArea;

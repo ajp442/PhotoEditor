@@ -51,6 +51,7 @@ class MdiChild : public QScrollArea
 
 public:
     MdiChild();
+    ~MdiChild();
 
     void newFile();
     bool loadFile(const QString &fileName);
