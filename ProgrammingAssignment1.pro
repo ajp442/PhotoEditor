@@ -4,12 +4,10 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT += widgets
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
-
-TARGET = ProgrammingAssignment1
-TEMPLATE = app
+#TARGET = ProgrammingAssignment1
+#TEMPLATE = app
 
 
 SOURCES += main.cpp\
@@ -24,4 +22,10 @@ FORMS    += mainwindow.ui
 
 RESOURCES = ProgrammingAssignment1.qrc
 
-CONFIG += CONSOLE
+
+target.path = C:\Users\Andrew\Documents\GitHub\PhotoEditor
+INSTALLS += target
+# install
+#target.path = $$[QT_INSTALL_EXAMPLES]/widgets/mainwindows/application
+#INSTALLS += target
+#CONFIG += CONSOLE
