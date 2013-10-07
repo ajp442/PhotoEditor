@@ -642,7 +642,8 @@ void MainWindow::balance()
 //------------------------------------------------------------------------------
 void MainWindow::grayScale()
 {
-    if (activeMdiChild()) {
+    if (activeMdiChild())
+    {
         activeMdiChild()->grayScale();
         statusBar()->showMessage(tr("Image Grayed"), 2000);
     }
@@ -650,7 +651,11 @@ void MainWindow::grayScale()
 
 void MainWindow::sharpen()
 {
-
+    if (activeMdiChild())
+    {
+        activeMdiChild()->sharpen();
+        statusBar()->showMessage(tr("Image Sharpened"), 2000);
+    }
 }
 
 void MainWindow::soften()

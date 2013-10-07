@@ -269,7 +269,9 @@ void MdiChild::grayScale()
 
 void MdiChild::sharpen()
 {
-
+    image.sharpen();
+    imageLabel->setPixmap(image);
+    setModified();
 }
 
 void MdiChild::soften()
