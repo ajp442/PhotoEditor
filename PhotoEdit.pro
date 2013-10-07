@@ -8,10 +8,12 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    mdichild.cpp
+    mdichild.cpp \
+    image.cpp
 
 HEADERS  += mainwindow.h \
-    mdichild.h
+    mdichild.h \
+    image.h
 
 RESOURCES += \
     PhotoEdit.qrc

@@ -236,16 +236,6 @@ QString MdiChild::strippedName(const QString &fullFileName)
 }
 
 
-bool MdiChild::grayScale()
-{
-    qDebug() << "grayscale from child";
-    QImage theImage = image.toImage();
-    theImage.invertPixels();
-    image.convertFromImage(theImage);
-    imageLabel->setPixmap(image);
-    setModified();
-}
-
 /**************************************************************************//**
  * @brief Sets the modified flag that indicates if the image has been modified.
  * @param[in] changed - A flag indicating if the document has been changed.
@@ -264,4 +254,47 @@ void MdiChild::setModified(bool changed)
 bool MdiChild::isModified()
 {
     return modified;
+}
+
+//-----------------------------------------------------------------------------
+//                   Image Effects
+//-----------------------------------------------------------------------------
+void MdiChild::grayScale()
+{
+    image.grayscale();
+    imageLabel->setPixmap(image);
+    setModified();
+}
+
+
+void MdiChild::sharpen()
+{
+
+}
+
+void MdiChild::soften()
+{
+
+}
+
+void MdiChild::negative()
+{
+    image.negative();
+    imageLabel->setPixmap(image);
+    setModified();
+}
+
+void MdiChild::despeckle()
+{
+
+}
+
+void MdiChild::posterize()
+{
+
+}
+
+void MdiChild::edge()
+{
+
 }

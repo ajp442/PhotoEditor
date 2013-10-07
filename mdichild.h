@@ -54,7 +54,7 @@
 
 #include <QLabel>
 #include <QScrollArea>
-#include <QPixmap>
+#include "image.h"
 
 class MdiChild : public QScrollArea
 {
@@ -71,15 +71,21 @@ public:
     bool saveFile(const QString &fileName);
     QString userFriendlyCurrentFile();
     QString currentFile() { return curFile; }
-    bool grayScale();
     void setModified(bool changed = true);
     bool isModified();
 
+    //Image Effects
+    void grayScale();
+    void sharpen();
+    void soften();
+    void negative();
+    void despeckle();
+    void posterize();
+    void edge();
+    void emboss();
+
 protected:
     void closeEvent(QCloseEvent *event);
-
-private slots:
-    void documentWasModified();
 
 
 private:
@@ -91,7 +97,7 @@ private:
     bool isUntitled;
     bool modified;
 
-    QPixmap image;
+    Image image;
     QLabel *imageLabel;
     double scaleFactor;
 };

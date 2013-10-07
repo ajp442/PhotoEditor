@@ -349,7 +349,7 @@ void MainWindow::createActions()
 
 
     //================Effect Actions================
-    grayScaleAct = new QAction(tr("do grayScale"), this);
+    grayScaleAct = new QAction(tr("GrayScale"), this);
     grayScaleAct->setStatusTip(tr("convert image to grayscale"));
     connect(grayScaleAct, SIGNAL(triggered()), this, SLOT(grayScale()));
 
@@ -357,27 +357,27 @@ void MainWindow::createActions()
     sharpenAct->setStatusTip(tr(""));
     connect(sharpenAct, SIGNAL(triggered()), this, SLOT(sharpen()));
 
-    softenAct = new QAction(tr("soften"), this);
+    softenAct = new QAction(tr("Soften"), this);
     softenAct->setStatusTip(tr(""));
     connect(softenAct, SIGNAL(triggered()), this, SLOT(soften()));
 
-    negativeAct = new QAction(tr("negative"), this);
+    negativeAct = new QAction(tr("Negative"), this);
     negativeAct->setStatusTip(tr(""));
     connect(negativeAct, SIGNAL(triggered()), this, SLOT(negative()));
 
-    despeckleAct = new QAction(tr("despeckle"), this);
+    despeckleAct = new QAction(tr("Despeckle"), this);
     despeckleAct->setStatusTip(tr(""));
     connect(despeckleAct, SIGNAL(triggered()), this, SLOT(despeckle()));
 
-    posterizeAct = new QAction(tr("posterize"), this);
+    posterizeAct = new QAction(tr("Posterize"), this);
     posterizeAct->setStatusTip(tr(""));
     connect(posterizeAct, SIGNAL(triggered()), this, SLOT(posterize()));
 
-    edgeAct = new QAction(tr("edge"), this);
+    edgeAct = new QAction(tr("Edge"), this);
     edgeAct->setStatusTip(tr(""));
     connect(edgeAct, SIGNAL(triggered()), this, SLOT(edge()));
 
-    embossAct = new QAction(tr("emboss"), this);
+    embossAct = new QAction(tr("Emboss"), this);
     embossAct->setStatusTip(tr(""));
     connect(embossAct, SIGNAL(triggered()), this, SLOT(emboss()));
 
@@ -646,8 +646,6 @@ void MainWindow::grayScale()
         activeMdiChild()->grayScale();
         statusBar()->showMessage(tr("Image Grayed"), 2000);
     }
-    qDebug() << "doing GrayScale";
-
 }
 
 void MainWindow::sharpen()
@@ -662,7 +660,10 @@ void MainWindow::soften()
 
 void MainWindow::negative()
 {
-
+    if (activeMdiChild()) {
+        activeMdiChild()->negative();
+        statusBar()->showMessage(tr("Image Negated"), 2000);
+    }
 }
 
 void MainWindow::despeckle()
