@@ -678,7 +678,56 @@ void MainWindow::despeckle()
 
 void MainWindow::posterize()
 {
+    if(activeMdiChild())
+    {
+        QGroupBox *box = new QGroupBox(tr(""));
 
+        QLabel * label = new QLabel("Levels:");
+        QSlider * slider = new QSlider(Qt::Horizontal);
+        slider->setMinimumWidth(100);
+        QSpinBox *spinBox = new QSpinBox;
+        spinBox->setRange(0,255);
+
+        QPushButton *okButton = new QPushButton(tr("OK"));
+        okButton->setMaximumWidth(90);
+        QPushButton *cancelButton = new QPushButton(tr("Cancel"));
+        cancelButton->setMaximumWidth(90);
+        QGridLayout *layout3 = new QGridLayout;
+
+        QGridLayout *layout = new QGridLayout;
+
+        QLabel *titleLabel = new QLabel(tr("Posterize"));
+        QFont *titleFont = new QFont();
+        titleFont->setPointSize(11);
+        titleLabel->setFont(*titleFont);
+        layout3->addWidget(titleLabel, 0, 0);
+        layout->addWidget(slider, 1, 1);
+        layout->addWidget(spinBox, 1, 2);
+        layout->addWidget(label, 1, 0);
+        layout->setAlignment(Qt::AlignCenter);
+        layout->setHorizontalSpacing(20);
+        layout->setVerticalSpacing(10);
+        layout->setMargin(10);
+
+        QGridLayout *layout2 = new QGridLayout;
+
+        QVBoxLayout *hBox = new QVBoxLayout;
+        layout2->addWidget(okButton, 0, 1);
+        layout2->addWidget(cancelButton, 0, 2);
+        layout2->setAlignment(Qt::AlignRight);  //align buttons to the right
+        hBox->addLayout(layout3);
+        hBox->addLayout(layout);
+        hBox->addLayout(layout2);
+
+        box->setFixedSize(box->sizeHint());  //make the view not resizable
+        box->setAlignment(Qt::AlignCenter);
+        box->setLayout(hBox);
+        box->setFocusPolicy(Qt::StrongFocus);
+
+        box->show();
+
+
+    }
 }
 
 void MainWindow::edge()
