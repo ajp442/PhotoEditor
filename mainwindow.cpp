@@ -687,6 +687,11 @@ void MainWindow::posterize()
         slider->setMinimumWidth(100);
         QSpinBox *spinBox = new QSpinBox;
         spinBox->setRange(0,255);
+        QSlider * slider2 = new QSlider(Qt::Horizontal);
+        slider->setMinimumWidth(100);
+        QLabel * label2 = new QLabel(tr("Gamma:"));
+        QDoubleSpinBox *doubleSpingBox = new QDoubleSpinBox;
+        doubleSpingBox->setRange(0,1);
 
         QPushButton *okButton = new QPushButton(tr("OK"));
         okButton->setMaximumWidth(90);
@@ -704,6 +709,9 @@ void MainWindow::posterize()
         layout->addWidget(slider, 1, 1);
         layout->addWidget(spinBox, 1, 2);
         layout->addWidget(label, 1, 0);
+        layout->addWidget(slider2, 2, 1);
+        layout->addWidget(doubleSpingBox, 2, 2);
+        layout->addWidget(label2, 2, 0);
         layout->setAlignment(Qt::AlignCenter);
         layout->setHorizontalSpacing(20);
         layout->setVerticalSpacing(10);
