@@ -50,6 +50,7 @@
 
 #include "mainwindow.h"
 #include "mdichild.h"
+#include "dialog.h"
 
 
 MainWindow::MainWindow()
@@ -660,7 +661,17 @@ void MainWindow::sharpen()
 
 void MainWindow::soften()
 {
-
+    if(activeMdiChild())
+    {
+        int parameter = 100;
+        double height = 3.0;
+        //Here is the basic structure for using the dialog class
+        //Create the dialog with a title
+        //Add input gadgets to the dialog  (can only get ints or doubles)
+        dialog *softenDialog = new dialog(tr("Soften"));
+        softenDialog->addChild(tr("Parameter:"), parameter, 0, 255);
+        softenDialog->addChild(tr("Height:"), height, 0.0, 100.0);
+    }
 }
 
 void MainWindow::negative()
@@ -694,9 +705,9 @@ void MainWindow::posterize()
         doubleSpingBox->setRange(0,1);
 
         QPushButton *okButton = new QPushButton(tr("OK"));
-        okButton->setMaximumWidth(90);
+        //okButton->setMaximumWidth(90);
         QPushButton *cancelButton = new QPushButton(tr("Cancel"));
-        cancelButton->setMaximumWidth(90);
+        //cancelButton->setMaximumWidth(90);
         QGridLayout *layout3 = new QGridLayout;
 
         QGridLayout *layout = new QGridLayout;
