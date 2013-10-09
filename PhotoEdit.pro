@@ -10,12 +10,14 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     mdichild.cpp \
     image.cpp \
-    dialog.cpp
+    dialog.cpp \
+    picturelabel.cpp
 
 HEADERS  += mainwindow.h \
     mdichild.h \
     image.h \
-    dialog.h
+    dialog.h \
+    picturelabel.h
 
 RESOURCES += \
     PhotoEdit.qrc
