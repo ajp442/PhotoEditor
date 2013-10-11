@@ -649,9 +649,10 @@ void MainWindow::brightnessDialog()
         //Create the dialog with a title
         //Add input gadgets to the dialog  (can only get ints or doubles)
         dialog *myBrightnessDialog = new dialog(tr("Brightness"));
-        myBrightnessDialog->addChild(tr("Level:"), parameter, 0, 255);
+        myBrightnessDialog->addChild(tr("Level:"), parameter, -255, 255);
 
         connect(myBrightnessDialog, SIGNAL(valueChanged(std::vector<double>)), this, SLOT(brightness(std::vector<double>)));
+        //connect(myBrightnessDialog, SIGNAL(cancelled()), activeMdiChild()->, SLOT()
     }
 }
 

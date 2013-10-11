@@ -29,7 +29,9 @@ dialog::dialog(QString title)
     QPushButton *cancelButton = new QPushButton(QObject::tr("Cancel"));
 
     QObject::connect(cancelButton, SIGNAL(clicked()), container, SLOT(close()));
+    connect(cancelButton, SIGNAL(clicked()), this, SIGNAL(cancelled()));
     QObject::connect(okButton, SIGNAL(clicked()), container, SLOT(close()));
+    connect(okButton, SIGNAL(clicked()), this, SIGNAL(accepted()));
 
     buttonLayout->addWidget(okButton, 0, 0);
     buttonLayout->addWidget(cancelButton, 0, 1);

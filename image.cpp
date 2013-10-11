@@ -3,14 +3,25 @@
 
 Image::Image()
 {
+    unModifiedImage = new QImage(this->toImage());
+}
+
+bool Image::load( const QString & fileName, const char * format, Qt::ImageConversionFlags flags )
+{
+    bool returnValue =QPixmap::load(fileName, format, flags);
+    unModifiedImage = new QImage(this->toImage());
+    return returnValue;
 }
 
 void Image::grayscale()
 {
-    QImage *image = new QImage(this->toImage());
+    QImage *image = new QImage(*unModifiedImage);
 
     if(image->isNull())
+    {
+        qDebug("Null reference found");
         return;
+    }
 
     int gray = 0;
     int nrows = image->width(), ncols = image->height();
@@ -93,10 +104,10 @@ void Image::soften()
 
 void Image::negative()
 {
-    QImage image = this->toImage();
-    image.invertPixels();
-    this->convertFromImage(image);
-
+    QImage *image = new QImage(*unModifiedImage);//this->toImage();
+    image->invertPixels();
+    //this->convertFromImage(image);
+    this->convertFromImage(*image);
 }
 
 void Image::despeckle()
@@ -121,11 +132,11 @@ void Image::emboss()
 
 void Image::brightness(int brightnessLevel)
 {
-    QImage image = this->toImage();
-    if( image.isNull() )
+    QImage *image = new QImage(*unModifiedImage);//this->toImage();
+    if( image->isNull() )
         return;
 
-    int nrows = image.width(), ncols = image.height(), r, c,
+    int nrows = image->width(), ncols = image->height(), r, c,
     lut[256];
 
     for(int i = 0; i < 256; i++ )
@@ -141,12 +152,22 @@ void Image::brightness(int brightnessLevel)
     for( r = 0; r < nrows; r++ )
         for( c = 0; c < ncols; c++ )
         {
-            QRgb pixel = image.pixel(r,c);
+            QRgb pixel = image->pixel(r,c);
             int red = lut[qRed(pixel)];
             int green = lut[qGreen(pixel)];
             int blue = lut[qBlue(pixel)];
-            image.setPixel(r, c, qRgb(red, green, blue));
+            image->setPixel(r, c, qRgb(red, green, blue));
         }
 
-    this->convertFromImage(image);
+    this->convertFromImage(*image);
+}
+
+void Image::commit()
+{
+    unModifiedImage = new QImage(this->toImage());
+}
+
+void Image::revert()
+{
+    this->convertFromImage(*unModifiedImage);
 }

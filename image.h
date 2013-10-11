@@ -10,6 +10,9 @@ public:
 //    explicit Image(QObject *parent = 0);
 
     explicit Image();
+    void commit();
+    void revert();
+    bool load( const QString & fileName, const char * format = 0, Qt::ImageConversionFlags flags = Qt::AutoColor );
 
     void grayscale();
     void sharpen();
@@ -25,7 +28,8 @@ public:
 signals:
 
 public slots:
-
+private:
+    QImage *unModifiedImage;
 };
 
 #endif// IMAGE_H

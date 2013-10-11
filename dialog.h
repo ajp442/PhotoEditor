@@ -23,6 +23,8 @@ public:
     void addChild(QString label, double baseValue, double min, double max);
 signals:
     void valueChanged(std::vector<double> params);
+    void cancelled();
+    void accepted();
     void sliderValueChanged(double);
     void doubleSpinBoxValueChanged(int);
 public slots:
