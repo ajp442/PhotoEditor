@@ -300,3 +300,10 @@ void MdiChild::edge()
 {
 
 }
+
+void MdiChild::brightness(int brightnessLevel)
+{
+    image.brightness(brightnessLevel);
+    imageLabel->setPixmap(image);
+    setModified();
+}

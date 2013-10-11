@@ -119,3 +119,34 @@ void Image::emboss()
 
 }
 
+void Image::brightness(int brightnessLevel)
+{
+    QImage image = this->toImage();
+    if( image.isNull() )
+        return;
+
+    int nrows = image.width(), ncols = image.height(), r, c,
+    lut[256];
+
+    for(int i = 0; i < 256; i++ )
+    {
+        if( (i + brightnessLevel) > 255 )
+            lut[i] = 255;
+        else if(i + brightnessLevel < 0)
+            lut[i] = 0;
+        else
+            lut[i] = i + brightnessLevel;
+    }
+
+    for( r = 0; r < nrows; r++ )
+        for( c = 0; c < ncols; c++ )
+        {
+            QRgb pixel = image.pixel(r,c);
+            int red = lut[qRed(pixel)];
+            int green = lut[qGreen(pixel)];
+            int blue = lut[qBlue(pixel)];
+            image.setPixel(r, c, qRgb(red, green, blue));
+        }
+
+    this->convertFromImage(image);
+}

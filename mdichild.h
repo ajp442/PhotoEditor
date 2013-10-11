@@ -83,6 +83,7 @@ public:
     void posterize();
     void edge();
     void emboss();
+    void brightness(int brightnessLevel);
 
 protected:
     void closeEvent(QCloseEvent *event);

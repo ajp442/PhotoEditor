@@ -637,6 +637,25 @@ void MainWindow::balance()
 
 }
 
+//------------------------------------------------------------------------------
+//                  Dialogs
+//------------------------------------------------------------------------------
+void MainWindow::brightnessDialog()
+{
+    if(activeMdiChild())
+    {
+        int parameter = 100;
+        //Here is the basic structure for using the dialog class
+        //Create the dialog with a title
+        //Add input gadgets to the dialog  (can only get ints or doubles)
+        dialog *myBrightnessDialog = new dialog(tr("Brightness"));
+        myBrightnessDialog->addChild(tr("Level:"), parameter, 0, 255);
+
+        connect(myBrightnessDialog, SIGNAL(valueChanged(std::vector<double>)), this, SLOT(brightness(std::vector<double>)));
+    }
+}
+
+
 
 //------------------------------------------------------------------------------
 //                  Effects
@@ -663,14 +682,8 @@ void MainWindow::soften()
 {
     if(activeMdiChild())
     {
-        int parameter = 100;
-        double height = 3.0;
-        //Here is the basic structure for using the dialog class
-        //Create the dialog with a title
-        //Add input gadgets to the dialog  (can only get ints or doubles)
-        dialog *softenDialog = new dialog(tr("Soften"));
-        softenDialog->addChild(tr("Parameter:"), parameter, 0, 255);
-        softenDialog->addChild(tr("Height:"), height, 0.0, 100.0);
+        //testing the parameter
+        brightnessDialog();
     }
 }
 
@@ -757,6 +770,16 @@ void MainWindow::edge()
 void MainWindow::emboss()
 {
 
+}
+
+void MainWindow::brightness(std::vector<double> dialogValues)
+{
+    //assumes dialogValues is valid and only has 1 value
+    if (activeMdiChild())
+    {
+        activeMdiChild()->brightness(dialogValues[0]);
+        statusBar()->showMessage(tr("Image Brightened"), 2000);
+    }
 }
 
 //------------------------------------------------------------------------------

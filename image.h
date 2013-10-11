@@ -19,6 +19,7 @@ public:
     void posterize();
     void edge();
     void emboss();
+    void brightness(int brightnessLevel);
 
 
 signals:

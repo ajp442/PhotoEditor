@@ -92,6 +92,9 @@ private slots:
     void rotate();
     void balance();
 
+    //Dialogs
+    void brightnessDialog();
+
     //Effects
     void grayScale();
     void sharpen();
@@ -101,6 +104,7 @@ private slots:
     void posterize();
     void edge();
     void emboss();
+    void brightness(std::vector<double> dialogValues);
 
     //About
     void about();
