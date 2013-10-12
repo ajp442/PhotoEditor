@@ -7,8 +7,7 @@ PictureLabel::PictureLabel(QWidget *parent) :
 
 void PictureLabel::mousePressEvent(QMouseEvent *ev)
 {
-    Rectangle.setTopLeft(ev->pos());
-    Rectangle.setBottomRight(ev->pos());
+    Rectangle = QRect(ev->pos(),ev->pos());
 
     TrackingRectangle = true;
 }
