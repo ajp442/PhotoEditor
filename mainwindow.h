@@ -94,13 +94,14 @@ private slots:
 
     //Dialogs
     void brightnessDialog();
+    void despeckleDialog();
 
     //Effects
     void grayScale();
     void sharpen();
     void soften();
     void negative();
-    void despeckle();
+    void despeckle(std::vector<double> dialogValues);
     void posterize();
     void edge();
     void emboss();
@@ -184,6 +185,7 @@ private:
     QAction *posterizeAct;
     QAction *edgeAct;
     QAction *embossAct;
+    QAction *brightnessAct;
 
     //About
     QAction *aboutAct;

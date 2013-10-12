@@ -173,6 +173,9 @@ void MainWindow::updateEffectsMenu()
     effectsMenu->addAction(embossAct);
     embossAct->setEnabled(hasMdiChild);
 
+    effectsMenu->addAction(brightnessAct);
+    brightnessAct->setEnabled(hasMdiChild);
+
 }
 
 /**************************************************************************//**
@@ -368,7 +371,7 @@ void MainWindow::createActions()
 
     despeckleAct = new QAction(tr("Despeckle"), this);
     despeckleAct->setStatusTip(tr(""));
-    connect(despeckleAct, SIGNAL(triggered()), this, SLOT(despeckle()));
+    connect(despeckleAct, SIGNAL(triggered()), this, SLOT(despeckleDialog()));
 
     posterizeAct = new QAction(tr("Posterize"), this);
     posterizeAct->setStatusTip(tr(""));
@@ -381,6 +384,10 @@ void MainWindow::createActions()
     embossAct = new QAction(tr("Emboss"), this);
     embossAct->setStatusTip(tr(""));
     connect(embossAct, SIGNAL(triggered()), this, SLOT(emboss()));
+
+    brightnessAct = new QAction(tr("Brightness"), this);
+    brightnessAct->setStatusTip(tr(""));
+    connect(brightnessAct, SIGNAL(triggered()), this, SLOT(brightnessDialog()));
 
 }
 
@@ -644,12 +651,10 @@ void MainWindow::brightnessDialog()
 {
     if(activeMdiChild())
     {
-        int parameter = 100;
-        //Here is the basic structure for using the dialog class
-        //Create the dialog with a title
-        //Add input gadgets to the dialog  (can only get ints or doubles)
+        int baseValue = 0, min = -255, max = 255;
+
         dialog *myBrightnessDialog = new dialog(tr("Brightness"));
-        myBrightnessDialog->addChild(tr("Level:"), parameter, -255, 255);
+        myBrightnessDialog->addChild(tr("Level:"), baseValue, min, max);
 
         connect(myBrightnessDialog, SIGNAL(valueChanged(std::vector<double>)), this, SLOT(brightness(std::vector<double>)));
         connect(myBrightnessDialog, SIGNAL(cancelled()), activeMdiChild(), SLOT(revertImageChanges()));
@@ -657,6 +662,20 @@ void MainWindow::brightnessDialog()
     }
 }
 
+void MainWindow::despeckleDialog()
+{
+    if(activeMdiChild())
+    {
+        int baseValue = 32, min = 0, max = 255;
+
+        dialog *despeckle_dialog = new dialog(tr("Despeckle"));
+        despeckle_dialog->addChild(tr("Threshold:"), baseValue, min, max);
+
+        connect(despeckle_dialog, SIGNAL(valueChanged(std::vector<double>)), this, SLOT(despeckle(std::vector<double>)));
+        connect(despeckle_dialog, SIGNAL(cancelled()), activeMdiChild(), SLOT(revertImageChanges()));
+        connect(despeckle_dialog, SIGNAL(accepted()), activeMdiChild(), SLOT(commitImageChanges()));
+    }
+}
 
 
 //------------------------------------------------------------------------------
@@ -682,11 +701,6 @@ void MainWindow::sharpen()
 
 void MainWindow::soften()
 {
-    if(activeMdiChild())
-    {
-        //testing the parameter
-        brightnessDialog();
-    }
 }
 
 void MainWindow::negative()
@@ -697,9 +711,14 @@ void MainWindow::negative()
     }
 }
 
-void MainWindow::despeckle()
+void MainWindow::despeckle(std::vector<double> dialogValues)
 {
-
+    //assumes dialogValues is valid and only has 1 value
+    if (activeMdiChild())
+    {
+        activeMdiChild()->despeckle(dialogValues[0]);
+        statusBar()->showMessage(tr("Image Despeckled"), 2000);
+    }
 }
 
 void MainWindow::posterize()

@@ -103,15 +103,60 @@ void Image::soften()
 
 void Image::negative()
 {
-    QImage *image = new QImage(*unModifiedImage);//this->toImage();
+    QImage *image = new QImage(*unModifiedImage);
     image->invertPixels();
     //this->convertFromImage(image);
     this->convertFromImage(*image);
 }
 
-void Image::despeckle()
+void Image::despeckle(int threshold = 32)
 {
+    QImage *image = new QImage(*unModifiedImage);
+    QImage *temp = new QImage(*unModifiedImage);          //Copy of the original image
 
+    //If there is no image selected, exit the function.
+    //This could prevent crashes when trying to reference an
+    //image that doesn't exist and also saves time by eliminating
+    //computations.
+    if(image->isNull())
+        return;
+
+    //For every pixel in the image, change the value of the pixel
+    //if it's out of range of the threshold
+    for (int r = 1; r < image->width() - 1; r++)
+        for(int c = 1; c < image->height() - 1; c++)
+        {
+            //remove the middle pixel from the average
+            int blueSum = -qBlue(temp->pixel(r, c));
+            int greenSum = -qGreen(temp->pixel(r, c));
+            int redSum = -qRed(temp->pixel(r, c));
+
+            //Add all 9 pixels to the sum
+            //The middle pixel was already subtracted, so it will add
+            //zero to the sum overall
+            for(int i = -1; i <= 1; i++)
+                for(int j = -1; j <= 1; j++)
+                {
+                    QRgb pixel = temp->pixel(r+i, c+j);
+                    blueSum = -qBlue(pixel);
+                    greenSum = -qGreen(pixel);
+                    redSum = -qRed(pixel);
+                }
+
+            //Calculate the average (8 total pixels)
+            double blueAvg = blueSum/8.0;
+            double greenAvg = greenSum/8.0;
+            double redAvg = redSum/8.0;
+
+            double avg = blueAvg * 0.11 + redAvg * 0.30 + greenAvg * 0.59;
+
+            //If the difference between the center pixel and the
+            //average is greater than than the threshold, replace
+            //the middle pixel with the average of the other 8 pixels
+            if(abs(qGray(temp->pixel(r, c)) - avg) > threshold)
+                image->setPixel(r, c, qRgb(redAvg, greenAvg, blueAvg));
+        }
+    this->convertFromImage(*image);
 }
 
 void Image::posterize()

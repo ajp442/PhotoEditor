@@ -79,7 +79,7 @@ public:
     void sharpen();
     void soften();
     void negative();
-    void despeckle();
+    void despeckle(int threshold);
     void posterize();
     void edge();
     void emboss();

@@ -286,9 +286,11 @@ void MdiChild::negative()
     setModified();
 }
 
-void MdiChild::despeckle()
+void MdiChild::despeckle(int threshold)
 {
-
+    image.despeckle(threshold);
+    imageLabel->setPixmap(image);
+    setModified();
 }
 
 void MdiChild::posterize()
