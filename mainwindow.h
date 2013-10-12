@@ -95,6 +95,7 @@ private slots:
     //Dialogs
     void brightnessDialog();
     void despeckleDialog();
+    void gammaDialog();
 
     //Effects
     void grayScale();
@@ -105,6 +106,7 @@ private slots:
     void posterize();
     void edge();
     void emboss();
+    void gamma(std::vector<double> dialogValues);
     void brightness(std::vector<double> dialogValues);
 
     //About
@@ -185,6 +187,7 @@ private:
     QAction *posterizeAct;
     QAction *edgeAct;
     QAction *embossAct;
+    QAction *gammaAct;
     QAction *brightnessAct;
 
     //About

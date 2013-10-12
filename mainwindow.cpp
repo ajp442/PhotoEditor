@@ -173,6 +173,9 @@ void MainWindow::updateEffectsMenu()
     effectsMenu->addAction(embossAct);
     embossAct->setEnabled(hasMdiChild);
 
+    effectsMenu->addAction(gammaAct);
+    gammaAct->setEnabled(hasMdiChild);
+
     effectsMenu->addAction(brightnessAct);
     brightnessAct->setEnabled(hasMdiChild);
 
@@ -384,6 +387,10 @@ void MainWindow::createActions()
     embossAct = new QAction(tr("Emboss"), this);
     embossAct->setStatusTip(tr(""));
     connect(embossAct, SIGNAL(triggered()), this, SLOT(emboss()));
+
+    gammaAct = new QAction(tr("Gamma"), this);
+    gammaAct->setStatusTip(tr(""));
+    connect(gammaAct, SIGNAL(triggered()), this, SLOT(gammaDialog()));
 
     brightnessAct = new QAction(tr("Brightness"), this);
     brightnessAct->setStatusTip(tr(""));
@@ -677,6 +684,21 @@ void MainWindow::despeckleDialog()
     }
 }
 
+void MainWindow::gammaDialog()
+{
+    if(activeMdiChild())
+    {
+        double baseValue = 1, min = 0, max = 5;
+
+        dialog *gamma_dialog = new dialog(tr("Gamma"));
+        gamma_dialog->addChild(tr("Gamma Value:"), baseValue, min, max);
+
+        connect(gamma_dialog, SIGNAL(valueChanged(std::vector<double>)), this, SLOT(gamma(std::vector<double>)));
+        connect(gamma_dialog, SIGNAL(cancelled()), activeMdiChild(), SLOT(revertImageChanges()));
+        connect(gamma_dialog, SIGNAL(accepted()), activeMdiChild(), SLOT(commitImageChanges()));
+    }
+}
+
 
 //------------------------------------------------------------------------------
 //                  Effects
@@ -791,6 +813,16 @@ void MainWindow::edge()
 void MainWindow::emboss()
 {
 
+}
+
+void MainWindow::gamma(std::vector<double> dialogValues)
+{
+    //assumes dialogValues is valid and only has 1 value
+    if (activeMdiChild())
+    {
+        activeMdiChild()->gamma(dialogValues[0]);
+        statusBar()->showMessage(tr("Image Gamma Changed"), 2000);
+    }
 }
 
 void MainWindow::brightness(std::vector<double> dialogValues)

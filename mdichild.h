@@ -83,6 +83,7 @@ public:
     void posterize();
     void edge();
     void emboss();
+    void gamma(double gammaValue);
     void brightness(int brightnessLevel);
 
 public slots:

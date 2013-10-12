@@ -174,6 +174,29 @@ void Image::emboss()
 
 }
 
+
+void Image::gamma(double gammaValue)
+{
+    QImage *image = new QImage(*unModifiedImage);
+
+    if( image->isNull() )
+        return;
+
+    for ( int x = 0; x < image->width(); x++ )
+    {
+        for ( int y = 0; y < image->height(); y++ )
+        {
+            QRgb p = image->pixel( x, y );
+            int r = pow( qRed( p ) / 255.0, gammaValue ) * 255 + 0.5;
+            int g = pow( qGreen( p ) / 255.0, gammaValue ) * 255 + 0.5;
+            int b = pow( qBlue( p ) / 255.0, gammaValue ) * 255 + 0.5;
+            image->setPixel( x, y, qRgb( r, g, b ) );
+        }
+    }
+
+    this->convertFromImage(*image);
+}
+
 void Image::brightness(int brightnessLevel)
 {
     QImage *image = new QImage(*unModifiedImage);//this->toImage();

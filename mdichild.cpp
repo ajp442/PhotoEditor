@@ -308,6 +308,13 @@ void MdiChild::emboss()
 
 }
 
+void MdiChild::gamma(double gammaValue)
+{
+    image.gamma(gammaValue);
+    imageLabel->setPixmap(image);
+    setModified();
+}
+
 void MdiChild::brightness(int brightnessLevel)
 {
     image.brightness(brightnessLevel);
