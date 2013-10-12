@@ -322,6 +322,20 @@ void MdiChild::brightness(int brightnessLevel)
     setModified();
 }
 
+void MdiChild::binaryThreshold(int threshold)
+{
+    image.binaryThreshold(threshold);
+    imageLabel->setPixmap(image);
+    setModified();
+}
+
+void MdiChild::contrast(int lower, int upper)
+{
+    image.contrast(lower, upper);
+    imageLabel->setPixmap(image);
+    setModified();
+}
+
 void MdiChild::commitImageChanges()
 {
     image.commit();

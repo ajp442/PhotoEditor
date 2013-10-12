@@ -22,7 +22,7 @@ public:
     void addChild(QString label, int baseValue, int min, int max);
     void addChild(QString label, double baseValue, double min, double max);
 signals:
-    void valueChanged(std::vector<double> values);
+    void valueChanged(const std::vector<double> &values);
     void cancelled();
     void accepted();
     void sliderValueChanged(double);

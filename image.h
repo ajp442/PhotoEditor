@@ -2,6 +2,7 @@
 #define IMAGE_H
 
 #include <QPixmap>
+#include <QDebug>
 
 class Image :public QObject, public QPixmap
 {
@@ -23,6 +24,8 @@ public:
     void emboss();
     void gamma(double gammaValue);
     void brightness(int brightnessLevel);
+    void binaryThreshold(int threshold);
+    void contrast(int lower, int upper);
 
 public slots:
     void commit();

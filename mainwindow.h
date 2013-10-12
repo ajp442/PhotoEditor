@@ -90,24 +90,27 @@ private slots:
     void crop();
     void imgResize();
     void rotate();
-    void balance();
+    void balance(std::vector<double> dialogValues);
 
     //Dialogs
     void brightnessDialog();
     void despeckleDialog();
     void gammaDialog();
+    void binaryThresholdDialog();
+    void balanceDialog();
 
     //Effects
     void grayScale();
     void sharpen();
     void soften();
     void negative();
-    void despeckle(std::vector<double> dialogValues);
+    void despeckle(const std::vector<double> &dialogValues);
     void posterize();
     void edge();
     void emboss();
-    void gamma(std::vector<double> dialogValues);
-    void brightness(std::vector<double> dialogValues);
+    void gamma(const std::vector<double> &dialogValues);
+    void brightness(const std::vector<double> &dialogValues);
+    void binaryThreshold(const std::vector<double> &dialogValues);
 
     //About
     void about();
@@ -189,6 +192,7 @@ private:
     QAction *embossAct;
     QAction *gammaAct;
     QAction *brightnessAct;
+    QAction *binaryThresholdAct;
 
     //About
     QAction *aboutAct;

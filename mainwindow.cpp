@@ -179,6 +179,9 @@ void MainWindow::updateEffectsMenu()
     effectsMenu->addAction(brightnessAct);
     brightnessAct->setEnabled(hasMdiChild);
 
+    effectsMenu->addAction(binaryThresholdAct);
+    binaryThresholdAct->setEnabled(hasMdiChild);
+
 }
 
 /**************************************************************************//**
@@ -351,7 +354,7 @@ void MainWindow::createActions()
 
     balanceAct = new QAction(tr("balance"), this);
     balanceAct->setStatusTip(tr(""));
-    connect(balanceAct, SIGNAL(triggered()), this, SLOT(balance()));
+    connect(balanceAct, SIGNAL(triggered()), this, SLOT(balanceDialog()));
 
 
 
@@ -395,6 +398,10 @@ void MainWindow::createActions()
     brightnessAct = new QAction(tr("Brightness"), this);
     brightnessAct->setStatusTip(tr(""));
     connect(brightnessAct, SIGNAL(triggered()), this, SLOT(brightnessDialog()));
+
+    binaryThresholdAct = new QAction(tr("Binary Threshold"), this);
+    binaryThresholdAct->setStatusTip(tr(""));
+    connect(binaryThresholdAct, SIGNAL(triggered()), this, SLOT(binaryThresholdDialog()));
 
 }
 
@@ -646,9 +653,16 @@ void MainWindow::rotate()
 
 }
 
-void MainWindow::balance()
+void MainWindow::balance(std::vector<double> dialogValues)
 {
-
+    if (activeMdiChild())
+    {
+        //activeMdiChild()->brightness(dialogValues[0]);
+        //activeMdiChild()->contrast(dialogValues[1], dialogValues[2]);
+        activeMdiChild()->gamma(dialogValues[3]);
+        //activeMdiChild()->commitImageChanges();
+        statusBar()->showMessage(tr("Image Balanced"), 2000);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -700,6 +714,42 @@ void MainWindow::gammaDialog()
 }
 
 
+void MainWindow::binaryThresholdDialog()
+{
+    if(activeMdiChild())
+    {
+        int baseValue = 100, min = 0, max = 255;
+
+        dialog *binaryThreshold_dialog = new dialog(tr("Binary Threshold"));
+        binaryThreshold_dialog->addChild(tr("Threshold:"), baseValue, min, max);
+
+        connect(binaryThreshold_dialog, SIGNAL(valueChanged(std::vector<double>)), this, SLOT(binaryThreshold(std::vector<double>)));
+        connect(binaryThreshold_dialog, SIGNAL(cancelled()), activeMdiChild(), SLOT(revertImageChanges()));
+        connect(binaryThreshold_dialog, SIGNAL(accepted()), activeMdiChild(), SLOT(commitImageChanges()));
+    }
+}
+
+void MainWindow::balanceDialog()
+{
+    if(activeMdiChild())
+    {
+        int brightness = 0, brightnessMin = -255, brightnessMax = 255;
+        int contrastLower = 0, contrastMin = 0, contrastMax = 255;
+        int contrastUpper = 255;
+        double gamma = 1, gammaMin = 0, gammaMax = 5;
+
+        dialog *binaryThreshold_dialog = new dialog(tr("Balance"));
+        binaryThreshold_dialog->addChild(tr("Brightness:"), brightness, brightnessMin, brightnessMax);
+        binaryThreshold_dialog->addChild(tr("Contrast Lower:"), contrastLower, contrastMin, contrastMax);
+        binaryThreshold_dialog->addChild(tr("Contrast Upper:"), contrastUpper, contrastMin, contrastMax);
+        binaryThreshold_dialog->addChild(tr("Gamma:"), gamma, gammaMin, gammaMax);
+
+        connect(binaryThreshold_dialog, SIGNAL(valueChanged(std::vector<double>)), this, SLOT(balance(std::vector<double>)));
+        connect(binaryThreshold_dialog, SIGNAL(cancelled()), activeMdiChild(), SLOT(revertImageChanges()));
+        connect(binaryThreshold_dialog, SIGNAL(accepted()), activeMdiChild(), SLOT(commitImageChanges()));
+    }
+}
+
 //------------------------------------------------------------------------------
 //                  Effects
 //------------------------------------------------------------------------------
@@ -708,6 +758,7 @@ void MainWindow::grayScale()
     if (activeMdiChild())
     {
         activeMdiChild()->grayScale();
+        activeMdiChild()->commitImageChanges();
         statusBar()->showMessage(tr("Image Grayed"), 2000);
     }
 }
@@ -717,6 +768,7 @@ void MainWindow::sharpen()
     if (activeMdiChild())
     {
         activeMdiChild()->sharpen();
+        activeMdiChild()->commitImageChanges();
         statusBar()->showMessage(tr("Image Sharpened"), 2000);
     }
 }
@@ -727,13 +779,15 @@ void MainWindow::soften()
 
 void MainWindow::negative()
 {
-    if (activeMdiChild()) {
+    if (activeMdiChild())
+    {
         activeMdiChild()->negative();
+        activeMdiChild()->commitImageChanges();
         statusBar()->showMessage(tr("Image Negated"), 2000);
     }
 }
 
-void MainWindow::despeckle(std::vector<double> dialogValues)
+void MainWindow::despeckle(const std::vector<double> &dialogValues)
 {
     //assumes dialogValues is valid and only has 1 value
     if (activeMdiChild())
@@ -745,64 +799,7 @@ void MainWindow::despeckle(std::vector<double> dialogValues)
 
 void MainWindow::posterize()
 {
-    if(activeMdiChild())
-    {
-        QGroupBox *box = new QGroupBox(tr(""));
 
-        QLabel * label = new QLabel("Levels:");
-        QSlider * slider = new QSlider(Qt::Horizontal);
-        slider->setMinimumWidth(100);
-        QSpinBox *spinBox = new QSpinBox;
-        spinBox->setRange(0,255);
-        QSlider * slider2 = new QSlider(Qt::Horizontal);
-        slider->setMinimumWidth(100);
-        QLabel * label2 = new QLabel(tr("Gamma:"));
-        QDoubleSpinBox *doubleSpingBox = new QDoubleSpinBox;
-        doubleSpingBox->setRange(0,1);
-
-        QPushButton *okButton = new QPushButton(tr("OK"));
-        //okButton->setMaximumWidth(90);
-        QPushButton *cancelButton = new QPushButton(tr("Cancel"));
-        //cancelButton->setMaximumWidth(90);
-        QGridLayout *layout3 = new QGridLayout;
-
-        QGridLayout *layout = new QGridLayout;
-
-        QLabel *titleLabel = new QLabel(tr("Posterize"));
-        QFont *titleFont = new QFont();
-        titleFont->setPointSize(11);
-        titleLabel->setFont(*titleFont);
-        layout3->addWidget(titleLabel, 0, 0);
-        layout->addWidget(slider, 1, 1);
-        layout->addWidget(spinBox, 1, 2);
-        layout->addWidget(label, 1, 0);
-        layout->addWidget(slider2, 2, 1);
-        layout->addWidget(doubleSpingBox, 2, 2);
-        layout->addWidget(label2, 2, 0);
-        layout->setAlignment(Qt::AlignCenter);
-        layout->setHorizontalSpacing(20);
-        layout->setVerticalSpacing(10);
-        layout->setMargin(10);
-
-        QGridLayout *layout2 = new QGridLayout;
-
-        QVBoxLayout *hBox = new QVBoxLayout;
-        layout2->addWidget(okButton, 0, 1);
-        layout2->addWidget(cancelButton, 0, 2);
-        layout2->setAlignment(Qt::AlignRight);  //align buttons to the right
-        hBox->addLayout(layout3);
-        hBox->addLayout(layout);
-        hBox->addLayout(layout2);
-
-        box->setFixedSize(box->sizeHint());  //make the view not resizable
-        box->setAlignment(Qt::AlignCenter);
-        box->setLayout(hBox);
-        box->setFocusPolicy(Qt::StrongFocus);
-
-        box->show();
-
-
-    }
 }
 
 void MainWindow::edge()
@@ -815,7 +812,7 @@ void MainWindow::emboss()
 
 }
 
-void MainWindow::gamma(std::vector<double> dialogValues)
+void MainWindow::gamma(const std::vector<double> &dialogValues)
 {
     //assumes dialogValues is valid and only has 1 value
     if (activeMdiChild())
@@ -825,13 +822,23 @@ void MainWindow::gamma(std::vector<double> dialogValues)
     }
 }
 
-void MainWindow::brightness(std::vector<double> dialogValues)
+void MainWindow::brightness(const std::vector<double> &dialogValues)
 {
     //assumes dialogValues is valid and only has 1 value
     if (activeMdiChild())
     {
         activeMdiChild()->brightness(dialogValues[0]);
         statusBar()->showMessage(tr("Image Brightened"), 2000);
+    }
+}
+
+void MainWindow::binaryThreshold(const std::vector<double> &dialogValues)
+{
+    //assumes dialogValues is valid and only has 1 value
+    if (activeMdiChild())
+    {
+        activeMdiChild()->binaryThreshold(dialogValues[0]);
+        statusBar()->showMessage(tr("Binary Threshold commited"), 2000);
     }
 }
 

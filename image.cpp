@@ -12,6 +12,7 @@ bool Image::load( const QString & fileName, const char * format, Qt::ImageConver
     return returnValue;
 }
 
+//WORKS
 void Image::grayscale()
 {
     QImage *image = new QImage(*unModifiedImage);
@@ -40,10 +41,11 @@ void Image::grayscale()
     this->convertFromImage(*image);
 }
 
+//WORKS
 void Image::sharpen()
 {
-    QImage *image = new QImage(this->toImage());
-    QImage *temp = new QImage(this->toImage());//Copy of the original image
+    QImage *image = new QImage(*unModifiedImage);
+    QImage *temp = new QImage(*unModifiedImage);//Copy of the original image
 
     //If there is no image, exit the function.
     //This could prevent crashes when trying to reference an
@@ -101,14 +103,15 @@ void Image::soften()
 
 }
 
+//WORKS
 void Image::negative()
 {
     QImage *image = new QImage(*unModifiedImage);
     image->invertPixels();
-    //this->convertFromImage(image);
     this->convertFromImage(*image);
 }
 
+//Does not work
 void Image::despeckle(int threshold = 32)
 {
     QImage *image = new QImage(*unModifiedImage);
@@ -174,7 +177,7 @@ void Image::emboss()
 
 }
 
-
+//WORKS
 void Image::gamma(double gammaValue)
 {
     QImage *image = new QImage(*unModifiedImage);
@@ -197,6 +200,8 @@ void Image::gamma(double gammaValue)
     this->convertFromImage(*image);
 }
 
+
+//WORKS
 void Image::brightness(int brightnessLevel)
 {
     QImage *image = new QImage(*unModifiedImage);//this->toImage();
@@ -227,6 +232,50 @@ void Image::brightness(int brightnessLevel)
         }
 
     this->convertFromImage(*image);
+}
+
+
+//WORKS
+void Image::binaryThreshold(int threshold)
+{
+    QImage *image = new QImage(*unModifiedImage);
+
+    if(threshold < 0 || threshold > 255)
+    {
+        qDebug() << "Image::binaryThreshold -> Invalid parameter, expecting a value [0,255] instead got " << threshold;
+    }
+
+    if( image->isNull() )
+    {
+        qDebug() << "Image::binaryThreshold -> Null reference";
+        return;
+    }
+
+    int lut[256] = {0};
+
+    for( int i = threshold; i < 256; i++ )
+        lut[i] = 255;
+
+    //Initialize image to grayscale to facilitate
+    // binary threshold operation
+    //Menu_Palette_Grayscale( image );
+
+    for( int r=0; r < image->width(); r++)
+        for( int c = 0; c < image->height(); c++)
+        {
+            QRgb pixel = image->pixel(r, c);
+            int pixelValue = lut[(int)(qRed(pixel) * 0.3 +
+                                       qGreen(pixel) * 0.59 +
+                                       qBlue(pixel) * 0.11)];
+            image->setPixel(r, c, qRgb( pixelValue, pixelValue, pixelValue));
+        }
+
+    this->convertFromImage(*image);
+}
+
+void Image::contrast(int lower, int upper)
+{
+
 }
 
 void Image::commit()

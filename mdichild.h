@@ -85,6 +85,8 @@ public:
     void emboss();
     void gamma(double gammaValue);
     void brightness(int brightnessLevel);
+    void binaryThreshold(int threshold);
+    void contrast(int lower, int upper);
 
 public slots:
     void commitImageChanges();
