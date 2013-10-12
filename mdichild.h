@@ -85,6 +85,10 @@ public:
     void emboss();
     void brightness(int brightnessLevel);
 
+public slots:
+    void commitImageChanges();
+    void revertImageChanges();
+
 protected:
     void closeEvent(QCloseEvent *event);
 

@@ -2,69 +2,64 @@
 
 dialog::dialog(QString title)
 {
-    container = new QDialog;//new QGroupBox();
-    container->setModal(true);
-    container->setWindowTitle(title);
-
-    QVBoxLayout *containerLayout = new QVBoxLayout;
-
-    //titleLayout = new QGridLayout;
+    //Initialize private members
+    container = new QDialog;
     bodyLayout = new QGridLayout;
     buttonLayout = new QGridLayout;
-
     currentValues = std::vector<double>(0);
+    signalMapper = new QSignalMapper;
     _row = 0;
 
-    //containerLayout->addLayout(titleLayout);
-    containerLayout->addLayout(bodyLayout);
-    containerLayout->addLayout(buttonLayout);
-
-    //QLabel *titleLabel = new QLabel(title);
-    //QFont *titleFont = new QFont();
-    //titleFont->setPointSize(11);
-    //titleLabel->setFont(*titleFont);
-    //titleLayout->addWidget(titleLabel, 0, 0);
-
-    okButton = new QPushButton(QObject::tr("OK"));
+    //Create the OK and Cancel buttons
+    QPushButton *okButton = new QPushButton(QObject::tr("OK"));
     QPushButton *cancelButton = new QPushButton(QObject::tr("Cancel"));
 
+    //When Cancel is pressed, close the dialog and emit cancelled()
     QObject::connect(cancelButton, SIGNAL(clicked()), container, SLOT(close()));
     connect(cancelButton, SIGNAL(clicked()), this, SIGNAL(cancelled()));
+
+    //When OK is pressed, close the dialog and emit accepted()
     QObject::connect(okButton, SIGNAL(clicked()), container, SLOT(close()));
     connect(okButton, SIGNAL(clicked()), this, SIGNAL(accepted()));
 
+    //Add the buttons with a right alignment
     buttonLayout->addWidget(okButton, 0, 0);
     buttonLayout->addWidget(cancelButton, 0, 1);
     buttonLayout->setAlignment(Qt::AlignRight);
 
+    //Set the spacing and margins for the bodyLayout
     bodyLayout->setAlignment(Qt::AlignCenter);
     bodyLayout->setHorizontalSpacing(20);
     bodyLayout->setVerticalSpacing(10);
     bodyLayout->setMargin(10);
 
+    //Add both of the layouts into a vertical box layout
+    //Make this box layout not resize
+    QVBoxLayout *containerLayout = new QVBoxLayout;
+    containerLayout->addLayout(bodyLayout);
+    containerLayout->addLayout(buttonLayout);
     containerLayout->setSizeConstraint( QLayout::SetFixedSize );
 
+    //Add the layout to the modal dialog
     container->setLayout(containerLayout);
     container->setFocusPolicy(Qt::StrongFocus);  //allows clicking and tabs to give the dialog focus
-
+    container->setModal(true);
+    container->setWindowTitle(title);
     container->show();
-
-
-    signalMapper = new QSignalMapper;
-    QObject::connect(okButton, SIGNAL(clicked()), this, SLOT(emitValueChanged()));
 }
 
 void dialog::addChild(QString label, double baseValue, double min, double max)
 {
-    currentValues.push_back(baseValue);
-
+    //Create a label, horizontal slider, and spinBox
     QLabel * childLabel = new QLabel(label);
     QSlider * childSlider = new QSlider(Qt::Horizontal);
+    QDoubleSpinBox *childSpinBox = new QDoubleSpinBox;
+
     childSlider->setMinimumWidth(100);
     childSlider->setTickInterval(10);
     childSlider->setRange(min*100, max*100);
     childSlider->setValue(baseValue*100);  //the slider connect assumes the value was multiplied by 100 (since it's an int slider)
-    QDoubleSpinBox *childSpinBox = new QDoubleSpinBox;
+
     childSpinBox->setValue(baseValue);
     childSpinBox->setRange(min, max);
 
@@ -76,6 +71,7 @@ void dialog::addChild(QString label, double baseValue, double min, double max)
     QObject::connect(childSlider,SIGNAL(valueChanged(int)),this,SLOT(reemitSliderValueChanged(int)) );
     connect(this, SIGNAL(sliderValueChanged(double)), childSpinBox, SLOT(setValue(double)));
 
+    currentValues.push_back(baseValue);
     bodyLayout->addWidget(childLabel, _row, 0);
     bodyLayout->addWidget(childSlider, _row, 1);
     bodyLayout->addWidget(childSpinBox, _row, 2);

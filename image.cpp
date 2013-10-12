@@ -3,7 +3,6 @@
 
 Image::Image()
 {
-    unModifiedImage = new QImage(this->toImage());
 }
 
 bool Image::load( const QString & fileName, const char * format, Qt::ImageConversionFlags flags )
@@ -171,3 +170,4 @@ void Image::revert()
 {
     this->convertFromImage(*unModifiedImage);
 }
+

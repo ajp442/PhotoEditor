@@ -3,17 +3,16 @@
 
 #include <QPixmap>
 
-class Image : public QPixmap
+class Image :public QObject, public QPixmap
 {
-    //Q_OBJECT
+    Q_OBJECT
 public:
-//    explicit Image(QObject *parent = 0);
+    Image();
 
-    explicit Image();
-    void commit();
-    void revert();
+    //Load in the image
     bool load( const QString & fileName, const char * format = 0, Qt::ImageConversionFlags flags = Qt::AutoColor );
 
+    //Image effects
     void grayscale();
     void sharpen();
     void soften();
@@ -24,10 +23,10 @@ public:
     void emboss();
     void brightness(int brightnessLevel);
 
-
-signals:
-
 public slots:
+    void commit();
+    void revert();
+
 private:
     QImage *unModifiedImage;
 };

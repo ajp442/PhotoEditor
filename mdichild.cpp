@@ -301,9 +301,24 @@ void MdiChild::edge()
 
 }
 
+void MdiChild::emboss()
+{
+
+}
+
 void MdiChild::brightness(int brightnessLevel)
 {
     image.brightness(brightnessLevel);
     imageLabel->setPixmap(image);
     setModified();
+}
+
+void MdiChild::commitImageChanges()
+{
+    image.commit();
+}
+
+void MdiChild::revertImageChanges()
+{
+    image.revert();
 }

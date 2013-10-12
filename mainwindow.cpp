@@ -652,7 +652,8 @@ void MainWindow::brightnessDialog()
         myBrightnessDialog->addChild(tr("Level:"), parameter, -255, 255);
 
         connect(myBrightnessDialog, SIGNAL(valueChanged(std::vector<double>)), this, SLOT(brightness(std::vector<double>)));
-        //connect(myBrightnessDialog, SIGNAL(cancelled()), activeMdiChild()->, SLOT()
+        connect(myBrightnessDialog, SIGNAL(cancelled()), activeMdiChild(), SLOT(revertImageChanges()));
+        connect(myBrightnessDialog, SIGNAL(accepted()), activeMdiChild(), SLOT(commitImageChanges()));
     }
 }
 
