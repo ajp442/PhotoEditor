@@ -81,10 +81,19 @@ public:
     void sharpen();
     void soften();
     void negative();
-    void despeckle();
+    void despeckle(int threshold);
     void posterize();
     void edge();
     void emboss();
+    void gamma(double gammaValue);
+    void brightness(int brightnessLevel);
+    void binaryThreshold(int threshold);
+    void contrast(int lower, int upper);
+    //void balance(int brightness, int contrastLower, int contrastUpper, double gamma);
+
+public slots:
+    void commitImageChanges();
+    void revertImageChanges();
 
 
 protected:

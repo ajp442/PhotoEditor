@@ -9,11 +9,15 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     mdichild.cpp \
-    image.cpp
+    image.cpp \
+    dialog.cpp \
+    picturelabel.cpp
 
 HEADERS  += mainwindow.h \
     mdichild.h \
-    image.h
+    image.h \
+    dialog.h \
+    picturelabel.h
 
 RESOURCES += \
     PhotoEdit.qrc

@@ -290,9 +290,11 @@ void MdiChild::negative()
     setModified();
 }
 
-void MdiChild::despeckle()
+void MdiChild::despeckle(int threshold)
 {
-
+    image.despeckle(threshold);
+    imageLabel->setPixmap(image);
+    setModified();
 }
 
 void MdiChild::posterize()
@@ -304,6 +306,7 @@ void MdiChild::edge()
 {
 
 }
+
 
 //-----------------------------------------------------------------------------
 //                   Zooming
@@ -324,4 +327,57 @@ void MdiChild::wheelEvent(QWheelEvent* event) {
 
     // Don't call superclass handler here
     // as wheel is normally used for moving scrollbars
+}
+
+void MdiChild::emboss()
+{
+
+}
+
+void MdiChild::gamma(double gammaValue)
+{
+    image.gamma(gammaValue);
+    imageLabel->setPixmap(image);
+    setModified();
+}
+
+void MdiChild::brightness(int brightnessLevel)
+{
+    image.brightness(brightnessLevel);
+    imageLabel->setPixmap(image);
+    setModified();
+}
+
+void MdiChild::binaryThreshold(int threshold)
+{
+    image.binaryThreshold(threshold);
+    imageLabel->setPixmap(image);
+    setModified();
+}
+
+void MdiChild::contrast(int lower, int upper)
+{
+    image.contrast(lower, upper);
+    imageLabel->setPixmap(image);
+    setModified();
+}
+/*
+void MdiChild::balance(int brightness, int contrastLower, int contrastUpper, double gamma)
+{
+    //image.brightness(brightness);
+    //image.contrast(contrastLower, contrastUpper);
+    //image.gamma(gamma);
+    image.balance(brightness, contrastLower, contrastUpper, gamma);
+    imageLabel->setPixmap(image);
+    setModified();
+}
+*/
+void MdiChild::commitImageChanges()
+{
+    image.commit();
+}
+
+void MdiChild::revertImageChanges()
+{
+    image.revert();
 }
