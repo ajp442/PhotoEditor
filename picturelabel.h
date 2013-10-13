@@ -3,6 +3,7 @@
 
 #include <QLabel>
 #include <QRect>
+#include <QMouseEvent>
 
 class PictureLabel : public QLabel
 {
@@ -23,7 +24,7 @@ private:
     bool TrackingRectangle;
     bool DrawRectangle;
 
-    QRect Rectangle = QRect();
+    QRect Rectangle;
 };
 
 #endif // PICTURELABEL_H
