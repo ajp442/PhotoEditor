@@ -113,6 +113,9 @@ private slots:
     MdiChild *createMdiChild();
     void switchLayoutDirection();
     void setActiveSubWindow(QWidget *window);
+    void zoomIn();
+    void zoomOut();
+    void zoomTo(double zoomLevel);
 
 private:
     //========Functions========
@@ -163,6 +166,8 @@ private:
     QAction *cascadeAct;
     QAction *nextAct;
     QAction *previousAct;
+    QAction *zoomInAct;
+    QAction *zoomOutAct;
     QAction *separatorAct;
 
     //Image

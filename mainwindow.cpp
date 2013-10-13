@@ -110,6 +110,8 @@ void MainWindow::updateMenus()
     cascadeAct->setEnabled(hasMdiChild);
     nextAct->setEnabled(hasMdiChild);
     previousAct->setEnabled(hasMdiChild);
+    zoomInAct->setEnabled(hasMdiChild);
+    zoomOutAct->setEnabled(hasMdiChild);
     separatorAct->setVisible(hasMdiChild);
 
 #ifndef QT_NO_CLIPBOARD
@@ -188,6 +190,8 @@ void MainWindow::updateWindowMenu()
     windowMenu->addSeparator();
     windowMenu->addAction(nextAct);
     windowMenu->addAction(previousAct);
+    windowMenu->addAction(zoomInAct);
+    windowMenu->addAction(zoomOutAct);
     windowMenu->addAction(separatorAct);
 
     QList<QMdiSubWindow *> windows = mdiArea->subWindowList();
@@ -309,15 +313,23 @@ void MainWindow::createActions()
     nextAct = new QAction(tr("Ne&xt"), this);
     nextAct->setShortcuts(QKeySequence::NextChild);
     nextAct->setStatusTip(tr("Move the focus to the next window"));
-    connect(nextAct, SIGNAL(triggered()),
-            mdiArea, SLOT(activateNextSubWindow()));
+    connect(nextAct, SIGNAL(triggered()), mdiArea, SLOT(activateNextSubWindow()));
 
     previousAct = new QAction(tr("Pre&vious"), this);
     previousAct->setShortcuts(QKeySequence::PreviousChild);
-    previousAct->setStatusTip(tr("Move the focus to the previous "
-                                 "window"));
-    connect(previousAct, SIGNAL(triggered()),
-            mdiArea, SLOT(activatePreviousSubWindow()));
+    previousAct->setStatusTip(tr("Move the focus to the previous window"));
+    connect(previousAct, SIGNAL(triggered()), mdiArea, SLOT(activatePreviousSubWindow()));
+
+    zoomInAct = new QAction(tr("Zoom In"), this);
+    zoomInAct->setShortcut(QKeySequence::ZoomIn);
+    zoomInAct->setStatusTip(tr("Zoom In"));
+    connect(zoomInAct, SIGNAL(triggered()), this, SLOT(zoomIn()));
+
+    zoomOutAct = new QAction(tr("Zoom Out"), this);
+    zoomOutAct->setShortcut(QKeySequence::ZoomOut);
+    zoomOutAct->setStatusTip(tr("Zoom Out"));
+    connect(zoomOutAct, SIGNAL(triggered()), this, SLOT(zoomOut()));
+
 
     separatorAct = new QAction(this);
     separatorAct->setSeparator(true);
@@ -741,11 +753,38 @@ void MainWindow::emboss()
 }
 
 //------------------------------------------------------------------------------
+//                  Window
+//------------------------------------------------------------------------------
+void MainWindow::zoomIn()
+{
+    if (activeMdiChild()) {
+        activeMdiChild()->scale(1.15, 1.15);
+    }
+}
+
+void MainWindow::zoomOut()
+{
+    if (activeMdiChild()) {
+        activeMdiChild()->scale(1/1.15, 1/1.15);
+    }
+}
+
+void MainWindow::zoomTo(double zoomLevel)
+{
+    if (activeMdiChild()) {
+        activeMdiChild()->resetMatrix();
+        //
+
+    }
+
+}
+
+
+//------------------------------------------------------------------------------
 //                  About
 //------------------------------------------------------------------------------
 void MainWindow::about()
 {
    QMessageBox::about(this, tr("About MDI"),
-            tr("The <b>MDI</b> example demonstrates how to write multiple "
-               "document interface applications using Qt."));
+            tr("This program demonstrates image manipulation using Qt"));
 }

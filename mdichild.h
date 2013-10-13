@@ -54,9 +54,11 @@
 
 #include <QLabel>
 #include <QScrollArea>
+#include <QWheelEvent>
+#include <QGraphicsView>
 #include "image.h"
 
-class MdiChild : public QScrollArea
+class MdiChild : public QGraphicsView
 {
     Q_OBJECT
 
@@ -84,6 +86,7 @@ public:
     void edge();
     void emboss();
 
+
 protected:
     void closeEvent(QCloseEvent *event);
 
@@ -92,6 +95,7 @@ private:
     bool maybeSave();
     void setCurrentFile(const QString &fileName);
     QString strippedName(const QString &fullFileName);
+      void wheelEvent(QWheelEvent * event);
 
     QString curFile;
     bool isUntitled;
@@ -99,7 +103,6 @@ private:
 
     Image image;
     QLabel *imageLabel;
-    double scaleFactor;
 };
 
 #endif

@@ -45,15 +45,21 @@
 ****************************************************************************/
 
 #include <QtWidgets>
+#include <QWheelEvent>
+#include <QGraphicsScene>
+#include <QPainter>
 
 #include "mdichild.h"
 
 MdiChild::MdiChild()
 {
     setAttribute(Qt::WA_DeleteOnClose);
+    this->setAlignment(Qt::AlignCenter);
     isUntitled = true;
     modified = false;
 
+    //Use ScrollHand Drag Mode to enable Panning
+    setDragMode(ScrollHandDrag);
 }
 
 MdiChild::~MdiChild()
@@ -95,12 +101,10 @@ bool MdiChild::loadFile(const QString &fileName)
             return false;
         }
 
-        imageLabel = new QLabel;
-        imageLabel->setPixmap(image);
-        setBackgroundRole(QPalette::Dark);
-        setWidget(imageLabel);
+        QGraphicsScene *scene = new QGraphicsScene;
+        scene->addPixmap(image);
+        this->setScene(scene);
 
-        scaleFactor = 1.0;
         setCurrentFile(fileName);
         return true;
     }
@@ -299,4 +303,25 @@ void MdiChild::posterize()
 void MdiChild::edge()
 {
 
+}
+
+//-----------------------------------------------------------------------------
+//                   Zooming
+//-----------------------------------------------------------------------------
+void MdiChild::wheelEvent(QWheelEvent* event) {
+
+    setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
+
+    // Scale the view / do the zoom
+    double scaleFactor = 1.15;
+    if(event->delta() > 0) {
+        // Zoom in
+        scale(scaleFactor, scaleFactor);
+    } else {
+        // Zooming out
+        scale(1.0 / scaleFactor, 1.0 / scaleFactor);
+    }
+
+    // Don't call superclass handler here
+    // as wheel is normally used for moving scrollbars
 }
