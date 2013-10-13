@@ -60,6 +60,9 @@ MdiChild::MdiChild()
 
     //Use ScrollHand Drag Mode to enable Panning
     setDragMode(ScrollHandDrag);
+
+    undoStack = new std::deque<QImage>(0);
+    redoStack = new std::deque<QImage>(0);
 }
 
 MdiChild::~MdiChild()
@@ -373,9 +376,41 @@ void MdiChild::balance(int brightness, int contrastLower, int contrastUpper, dou
 void MdiChild::commitImageChanges()
 {
     image.commit();
+    redoStack->clear();
+    undoStack->push_front(image.toImage());
+    //prevent the stack from storing 'too much'
+    if(undoStack->size() > 6)
+    {
+        qDebug() << "MdiChild -> undoStack getting too large, popping off oldest value";
+        undoStack->pop_back();
+    }
 }
 
 void MdiChild::revertImageChanges()
 {
     image.revert();
+}
+
+void MdiChild::undo()
+{
+    qDebug() << "Entered MdiChild::undo()";
+    if(!undoStack->empty())
+    {
+        qDebug() << "Popping off undoStack";
+        redoStack->push_front(image.toImage());
+        image.fromImage(undoStack->front());  //I mistakingly thought this would set my image, but it just returns the pixmap
+        undoStack->pop_front();
+    }
+}
+
+void MdiChild::redo()
+{
+        qDebug() << "Entered MdiChild::redo()";
+    if(!redoStack->empty())
+    {
+        qDebug() << "Popping off redoStack";
+        undoStack->push_front(image.toImage());
+        image.fromImage(redoStack->front());  //I mistakingly thought this would set my image, but it just returns the pixmap
+        redoStack->pop_front();
+    }
 }

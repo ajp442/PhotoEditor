@@ -56,6 +56,7 @@
 #include <QScrollArea>
 #include <QWheelEvent>
 #include <QGraphicsView>
+#include <deque>
 #include "image.h"
 
 class MdiChild : public QGraphicsView
@@ -91,6 +92,9 @@ public:
     void contrast(int lower, int upper);
     //void balance(int brightness, int contrastLower, int contrastUpper, double gamma);
 
+    void undo();
+    void redo();
+
 public slots:
     void commitImageChanges();
     void revertImageChanges();
@@ -111,6 +115,8 @@ private:
     bool modified;
 
     Image image;
+    std::deque<QImage> *undoStack;
+    std::deque<QImage> *redoStack;
 };
 
 #endif

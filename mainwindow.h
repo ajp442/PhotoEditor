@@ -86,6 +86,10 @@ private slots:
     void paste();
 #endif
 
+    //Undo, redo
+    void undo();
+    void redo();
+
     //Image
     void crop();
     void imgResize();
@@ -168,6 +172,10 @@ private:
     QAction *copyAct;
     QAction *pasteAct;
 #endif
+
+    //Undo, Redo
+    QAction *undoAct;
+    QAction *redoAct;
 
     //Windowing
     QAction *closeAct;

@@ -4,6 +4,7 @@
 Image::Image()
 {
 }
+
 /*
 QImage* Image::average(const QImage *image1, const QImage *image2, const QImage *image3)
 {

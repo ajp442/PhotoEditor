@@ -300,6 +300,15 @@ void MainWindow::createActions()
     connect(pasteAct, SIGNAL(triggered()), this, SLOT(paste()));
 #endif
 
+    //================Undo, Redo=======================
+    undoAct = new QAction(tr("Undo"), this);
+    undoAct->setStatusTip(tr("Undo the last image effect on the current window"));
+    connect(undoAct, SIGNAL(triggered()), this, SLOT(undo()));
+
+    redoAct = new QAction(tr("Redo"), this);
+    redoAct->setStatusTip(tr("Redo the last command undone"));
+    connect(redoAct, SIGNAL(triggered()), this, SLOT(redo()));
+
 
     //================Windowing Actions================
     closeAct = new QAction(tr("Cl&ose"), this);
@@ -442,6 +451,9 @@ void MainWindow::createMenus()
     editMenu->addAction(copyAct);
     editMenu->addAction(pasteAct);
 #endif
+
+    editMenu->addAction(undoAct);
+    editMenu->addAction(redoAct);
 
     //========Image Menu========
     imageMenu = menuBar()->addMenu(tr("Image"));
@@ -646,6 +658,25 @@ void MainWindow::paste()
 }
 #endif
 
+
+//------------------------------------------------------------------------------
+//                  Undo, Redo
+//------------------------------------------------------------------------------
+void MainWindow::undo()
+{
+    if(activeMdiChild())
+    {
+        activeMdiChild()->undo();
+    }
+}
+
+void MainWindow::redo()
+{
+    if(activeMdiChild())
+    {
+        activeMdiChild()->redo();
+    }
+}
 
 //------------------------------------------------------------------------------
 //                  Image
