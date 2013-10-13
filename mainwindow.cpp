@@ -589,7 +589,7 @@ void MainWindow::open()
 {
     QString caption = "Photo Edit - Select Image";
     QString defaultDir = QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
-    QString fileName = QFileDialog::getOpenFileName(this, caption, defaultDir, "images (*.png *.xpm *.jpg);;all (*.*)");
+    QString fileName = QFileDialog::getOpenFileName(this, caption, defaultDir, "images (*.png *.bmp *.jpg);;all (*.*)");
     if (!fileName.isEmpty()) {
         QMdiSubWindow *existing = findMdiChild(fileName);
         if (existing) {
@@ -757,7 +757,7 @@ void MainWindow::balanceDialog()
         dialog *binaryThreshold_dialog = new dialog(tr("Balance (Not Implemented)"));
         binaryThreshold_dialog->addChild(tr("Brightness:"), brightness, brightnessMin, brightnessMax);
         binaryThreshold_dialog->addChild(tr("Contrast Lower:"), contrastLower, contrastMin, contrastMax);
-        binaryThreshold_dialog->addChild(tr("         Upper:"), contrastUpper, contrastMin, contrastMax);
+        binaryThreshold_dialog->addChild(tr("Contrast Upper:"), contrastUpper, contrastMin, contrastMax);
         binaryThreshold_dialog->addChild(tr("Gamma:"), gamma, gammaMin, gammaMax);
 
         connect(binaryThreshold_dialog, SIGNAL(valueChanged(std::vector<double>)), this, SLOT(balance(std::vector<double>)));

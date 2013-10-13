@@ -111,7 +111,6 @@ private:
     bool modified;
 
     Image image;
-    QLabel *imageLabel;
 };
 
 #endif

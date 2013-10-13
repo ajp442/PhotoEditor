@@ -92,8 +92,6 @@ void MdiChild::newFile()
  *****************************************************************************/
 bool MdiChild::loadFile(const QString &fileName)
 {
-
-    imageLabel = new QLabel;
     if (!fileName.isEmpty()) {
         image.load(fileName);
         if (image.isNull()) {
@@ -266,7 +264,7 @@ bool MdiChild::isModified()
 void MdiChild::grayScale()
 {
     image.grayscale();
-    imageLabel->setPixmap(image);
+    scene()->addPixmap(image);
     setModified();
 }
 
@@ -274,7 +272,7 @@ void MdiChild::grayScale()
 void MdiChild::sharpen()
 {
     image.sharpen();
-    imageLabel->setPixmap(image);
+    scene()->addPixmap(image);
     setModified();
 }
 
@@ -286,14 +284,14 @@ void MdiChild::soften()
 void MdiChild::negative()
 {
     image.negative();
-    imageLabel->setPixmap(image);
+    scene()->addPixmap(image);
     setModified();
 }
 
 void MdiChild::despeckle(int threshold)
 {
     image.despeckle(threshold);
-    imageLabel->setPixmap(image);
+    scene()->addPixmap(image);
     setModified();
 }
 
@@ -337,28 +335,28 @@ void MdiChild::emboss()
 void MdiChild::gamma(double gammaValue)
 {
     image.gamma(gammaValue);
-    imageLabel->setPixmap(image);
+    scene()->addPixmap(image);
     setModified();
 }
 
 void MdiChild::brightness(int brightnessLevel)
 {
     image.brightness(brightnessLevel);
-    imageLabel->setPixmap(image);
+    scene()->addPixmap(image);
     setModified();
 }
 
 void MdiChild::binaryThreshold(int threshold)
 {
     image.binaryThreshold(threshold);
-    imageLabel->setPixmap(image);
+    scene()->addPixmap(image);
     setModified();
 }
 
 void MdiChild::contrast(int lower, int upper)
 {
     image.contrast(lower, upper);
-    imageLabel->setPixmap(image);
+    scene()->addPixmap(image);
     setModified();
 }
 /*
