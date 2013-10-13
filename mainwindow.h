@@ -90,7 +90,7 @@ private slots:
     void crop();
     void imgResize();
     void rotate();
-    void balance(std::vector<double> dialogValues);
+    void balance(const std::vector<double> &dialogValues);
 
     //Dialogs
     void brightnessDialog();

@@ -344,15 +344,15 @@ void MainWindow::createActions()
     cropAct->setStatusTip(tr("not color"));
     connect(cropAct, SIGNAL(triggered()), this, SLOT(crop()));
 
-    imgResizeAct = new QAction(tr("resize"), this);
+    imgResizeAct = new QAction(tr("Resize"), this);
     imgResizeAct->setStatusTip(tr(""));
     connect(imgResizeAct, SIGNAL(triggered()), this, SLOT(imgResize()));
 
-    rotateAct = new QAction(tr("rotate"), this);
+    rotateAct = new QAction(tr("Rotate"), this);
     rotateAct->setStatusTip(tr(""));
     connect(rotateAct, SIGNAL(triggered()), this, SLOT(rotate()));
 
-    balanceAct = new QAction(tr("balance"), this);
+    balanceAct = new QAction(tr("Balance (Not Implemented)"), this);
     balanceAct->setStatusTip(tr(""));
     connect(balanceAct, SIGNAL(triggered()), this, SLOT(balanceDialog()));
 
@@ -653,13 +653,17 @@ void MainWindow::rotate()
 
 }
 
-void MainWindow::balance(std::vector<double> dialogValues)
+void MainWindow::balance(const std::vector<double> &dialogValues)
 {
     if (activeMdiChild())
     {
         //activeMdiChild()->brightness(dialogValues[0]);
         //activeMdiChild()->contrast(dialogValues[1], dialogValues[2]);
-        activeMdiChild()->gamma(dialogValues[3]);
+        //activeMdiChild()->gamma(dialogValues[3]);
+        //activeMdiChild()->balance(dialogValues[0],
+        //                          dialogValues[1],
+        //                          dialogValues[2],
+        //                          dialogValues[3]);
         //activeMdiChild()->commitImageChanges();
         statusBar()->showMessage(tr("Image Balanced"), 2000);
     }
@@ -738,10 +742,10 @@ void MainWindow::balanceDialog()
         int contrastUpper = 255;
         double gamma = 1, gammaMin = 0, gammaMax = 5;
 
-        dialog *binaryThreshold_dialog = new dialog(tr("Balance"));
+        dialog *binaryThreshold_dialog = new dialog(tr("Balance (Not Implemented)"));
         binaryThreshold_dialog->addChild(tr("Brightness:"), brightness, brightnessMin, brightnessMax);
         binaryThreshold_dialog->addChild(tr("Contrast Lower:"), contrastLower, contrastMin, contrastMax);
-        binaryThreshold_dialog->addChild(tr("Contrast Upper:"), contrastUpper, contrastMin, contrastMax);
+        binaryThreshold_dialog->addChild(tr("         Upper:"), contrastUpper, contrastMin, contrastMax);
         binaryThreshold_dialog->addChild(tr("Gamma:"), gamma, gammaMin, gammaMax);
 
         connect(binaryThreshold_dialog, SIGNAL(valueChanged(std::vector<double>)), this, SLOT(balance(std::vector<double>)));

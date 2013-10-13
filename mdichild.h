@@ -87,6 +87,7 @@ public:
     void brightness(int brightnessLevel);
     void binaryThreshold(int threshold);
     void contrast(int lower, int upper);
+    //void balance(int brightness, int contrastLower, int contrastUpper, double gamma);
 
 public slots:
     void commitImageChanges();

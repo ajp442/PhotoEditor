@@ -335,7 +335,17 @@ void MdiChild::contrast(int lower, int upper)
     imageLabel->setPixmap(image);
     setModified();
 }
-
+/*
+void MdiChild::balance(int brightness, int contrastLower, int contrastUpper, double gamma)
+{
+    //image.brightness(brightness);
+    //image.contrast(contrastLower, contrastUpper);
+    //image.gamma(gamma);
+    image.balance(brightness, contrastLower, contrastUpper, gamma);
+    imageLabel->setPixmap(image);
+    setModified();
+}
+*/
 void MdiChild::commitImageChanges()
 {
     image.commit();
