@@ -570,7 +570,7 @@ MdiChild *MainWindow::activeMdiChild()
 
 /**************************************************************************//**
  * @brief Returns the active MdiChild window. Called by MainWindow::open()
- * to verrify that a window from the same file exists. Does not create an
+ * to verify that a window from the same file exists. Does not create an
  * MdiChild or QMdiSubWindow.
  *
  * @param[in] fileName - The criteria used to search for an MdiSubwindow.
@@ -591,7 +591,7 @@ QMdiSubWindow *MainWindow::findMdiChild(const QString &fileName)
 }
 
 /**************************************************************************//**
- * @brief Changes how menus are layed out.
+ * @brief Changes how menus are laid out.
  *****************************************************************************/
 void MainWindow::switchLayoutDirection()
 {

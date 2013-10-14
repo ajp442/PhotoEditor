@@ -50,13 +50,20 @@ Help: About
  * QPixmap classes of Qt.
  *
  * @par Extra Features
- * \li <b>Scroll Zooming</b> - Can zoom by scrolling and will scrool to the area where you cursor is.
+ * \li <b>Scroll Zooming</b> - Can zoom by scrolling and will scroll to the area where you cursor is.
  * \li <b>Fit to Window</b> - Will fit image to window and not allow zooming.
  * \li <b>Custom Zoom Factor</b> - Can edit the text in the zoom combobox for custom zoom level.
- * \li <b>Zoom Combobox</b> - Can always see what the zoom level of the selected window is.
+ * \li <b>Zoom Combo box</b> - Can always see what the zoom level of the selected window is.
  * \li <b>Zoom non-selected windows</b> - Can scroll zoom windows that are not selected.
- * \li <b>Zoom Hot-kyes</b> - Zoom with ctrl++ and ctrl+-, which are dynamically enabled/disabled.
- * \li <b></b>
+ * \li <b>Zoom Hot-keys</b> - Zoom with ctrl++ and ctrl+-, which are dynamically enabled/disabled.
+ * \li <b>Open Dialog</b> - Defaults to your pictures folder.
+ * \li <b>Open Dialog Filter</b> - By default it filters out non-image type files. Also allows to see all file types.
+ * \li <b>Undo</b> - Can undo an image manipulation change.
+ * \li <b>Redo</b> - Can redo an image manipulation change.
+ * \li <b>Dynamically Update Image Effects</b> - Image effects are dynamically updated.
+ * \li <b>Application Size and Position</b> - On close, the application will remember it's last size and position. Next time the application is run it will re-open to its last size and position.
+ * \li <b>Scroll in MDI area</b> - Can scroll in the larger MDI area allowing one to edit more images.
+ * \li <b>Pan</b> - User can grab and drag the image around in an MDI sub-window instead of scrolling.
  * \li <b></b>
  * \li <b></b>
  * \li <b></b>
@@ -95,7 +102,7 @@ $ qmake...
    Sep  28, 2013  Initial Commits.
    Oct  06, 2013  Re-structured program and added doxygen-style comments.
    Oct  07, 2013  Sharpen, Image Class for easy manipulation.
-   Oct  10, 2013  Dialog Class for code reuseabilaty.
+   Oct  10, 2013  Dialog Class for code re-usability.
    Oct  11, 2013  Gamma, despeckle, brightness
    Oct  12, 2013  Started working on zooming.
    Oct  13, 2013  Contrast, soften, edge detection, rotation.

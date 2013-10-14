@@ -59,7 +59,7 @@ MdiChild::MdiChild()
     modified = false;
     zoomable = true;
 
-    //Use ScrollHand Drag Mode to enable Panning
+    //Use Scroll and Drag Mode to enable Panning
     setDragMode(ScrollHandDrag);
 
     undoStack = new std::deque<QImage>(0);
@@ -91,7 +91,7 @@ void MdiChild::newFile()
  *
  * @param[in] fileName - The name of the file to load.
  *
- * @returns false - Empty filename or faild to load image.
+ * @returns false - Empty filename or failed to load image.
  * @returns true - Successfully loaded image.
  *****************************************************************************/
 bool MdiChild::loadFile(const QString &fileName)
@@ -118,7 +118,7 @@ bool MdiChild::loadFile(const QString &fileName)
 /**************************************************************************//**
  * @brief Saves the current image.
  *
- * @returns false - Unsucessful save.
+ * @returns false - Unsuccessful save.
  * @returns true - Successful save.
  *****************************************************************************/
 bool MdiChild::save()
@@ -136,7 +136,7 @@ bool MdiChild::save()
 /**************************************************************************//**
  * @brief Prompts the user for a file location and name. Then saves.
  *
- * @returns false - Unsucessful save.
+ * @returns false - Unsuccessful save.
  * @returns true - Successful save.
  *****************************************************************************/
 bool MdiChild::saveAs()
@@ -157,7 +157,7 @@ bool MdiChild::saveAs()
  *
  * @param[in] fileName - The name of the file to save.
  *
- * @returns false - Unsucessful save.
+ * @returns false - Unsuccessful save.
  * @returns true - Successful save.
  *****************************************************************************/
 bool MdiChild::saveFile(const QString &fileName)
@@ -181,8 +181,8 @@ QString MdiChild::userFriendlyCurrentFile()
 
 
 /**************************************************************************//**
- * @brief Handles when a MdiChild window is closed. If nesicery it will
- * prompt the user if they want to save, discard, or cancle.
+ * @brief Handles when a MdiChild window is closed. If necessary it will
+ * prompt the user if they want to save, discard, or cancel.
  *****************************************************************************/
 void MdiChild::closeEvent(QCloseEvent *event)
 {
@@ -194,10 +194,10 @@ void MdiChild::closeEvent(QCloseEvent *event)
 }
 
 /**************************************************************************//**
- * @brief Prompts the user if they want to save, discard, or cancle.
+ * @brief Prompts the user if they want to save, discard, or cancel.
  *
- * @returns true - Already saved, or saved successfuly.
- * @returns false - Cancle was selected.
+ * @returns true - Already saved, or saved successfully.
+ * @returns false - Cancel was selected.
  *****************************************************************************/
 bool MdiChild::maybeSave()
 {
@@ -441,7 +441,7 @@ void MdiChild::redo()
 //-----------------------------------------------------------------------------
 
 /**************************************************************************//**
- * @brief Re-implementing wheel event so we can zoom instead of scrool.
+ * @brief Re-implementing wheel event so we can zoom instead of scroll.
  *****************************************************************************/
 void MdiChild::wheelEvent(QWheelEvent* event) {
 
