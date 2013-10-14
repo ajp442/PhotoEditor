@@ -872,6 +872,12 @@ void MainWindow::sharpen()
 
 void MainWindow::soften()
 {
+    if(activeMdiChild())
+    {
+        activeMdiChild()->soften();
+        activeMdiChild()->commitImageChanges();
+        statusBar()->showMessage(tr("Image Softened"), 2000);
+    }
 }
 
 void MainWindow::negative()
@@ -901,7 +907,12 @@ void MainWindow::posterize()
 
 void MainWindow::edge()
 {
-
+    if (activeMdiChild())
+    {
+        activeMdiChild()->edge();
+        activeMdiChild()->commitImageChanges();
+        statusBar()->showMessage(tr("Edges for image"), 2000);
+    }
 }
 
 void MainWindow::emboss()

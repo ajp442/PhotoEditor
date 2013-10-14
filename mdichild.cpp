@@ -282,7 +282,9 @@ void MdiChild::sharpen()
 
 void MdiChild::soften()
 {
-
+    image.soften();
+    scene()->addPixmap(image);
+    setModified();
 }
 
 void MdiChild::negative()
@@ -306,7 +308,9 @@ void MdiChild::posterize()
 
 void MdiChild::edge()
 {
-
+    image.edge();
+    scene()->addPixmap(image);
+    setModified();
 }
 
 
