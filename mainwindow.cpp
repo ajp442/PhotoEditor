@@ -990,6 +990,9 @@ void MainWindow::contrast(const std::vector<double> &dialogValues)
 //-----------------------------------------------------------------------------
 //                   Zooming
 //-----------------------------------------------------------------------------
+/**************************************************************************//**
+ * @brief This is connected to the zoomInAct.
+ *****************************************************************************/
 void MainWindow::zoomIn()
 {
     if (activeMdiChild())
@@ -1002,6 +1005,9 @@ void MainWindow::zoomIn()
     }
 }
 
+/**************************************************************************//**
+ * @brief This is connected to the zoomOutAct.
+ *****************************************************************************/
 void MainWindow::zoomOut()
 {
     if (activeMdiChild())
@@ -1014,7 +1020,9 @@ void MainWindow::zoomOut()
     }
 }
 
-
+/**************************************************************************//**
+ * @brief This slot is used for setting the text in the zoom combobox.
+ *****************************************************************************/
 void MainWindow::handleZoomChanged()
 {
     if (activeMdiChild())
@@ -1037,6 +1045,10 @@ void MainWindow::handleZoomChanged()
     }
 }
 
+/**************************************************************************//**
+ * @brief Zooms the activeMdiChild to a size.
+ * @param[in] text - QString indicating the percent to scale the image by.
+ *****************************************************************************/
 void MainWindow::zoomTo(QString text)
 {
     if (activeMdiChild())
@@ -1060,7 +1072,6 @@ void MainWindow::zoomTo(QString text)
                 factor = factor/100;
                 activeMdiChild()->scale(factor, factor);
             }
-
         }
     }
 }

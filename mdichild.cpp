@@ -440,6 +440,9 @@ void MdiChild::redo()
 //                   Re-implemented Functions
 //-----------------------------------------------------------------------------
 
+/**************************************************************************//**
+ * @brief Re-implementing wheel event so we can zoom instead of scrool.
+ *****************************************************************************/
 void MdiChild::wheelEvent(QWheelEvent* event) {
 
     if(isZoomable())
@@ -469,7 +472,10 @@ void MdiChild::wheelEvent(QWheelEvent* event) {
 
 }
 
-
+/**************************************************************************//**
+ * @brief Re-implementing so we can fit the image in our view if zoomable
+ * is set to false.
+ *****************************************************************************/
 void MdiChild::resizeEvent(QResizeEvent *event)
 {
     if(!isZoomable())
