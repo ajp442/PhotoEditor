@@ -139,6 +139,7 @@ void Image::sharpen(QImage *image)
     this->convertFromImage(*image);
 }
 
+//WORKS
 void Image::soften(QImage *image)
 {
     QImage *temp; //Copy of original image
@@ -158,6 +159,28 @@ void Image::soften(QImage *image)
         qDebug() << "Image::soften -> Null reference";
         return;
     }
+
+    //Weiss's code
+    for ( int x = 1; x < image->width() - 1; x++ )
+    {
+        for ( int y = 1; y < image->height() - 1; y++ )
+        {
+            int r = 0, g = 0, b = 0;
+            for ( int m = -1; m <= 1; m++ )
+            {
+                for ( int n = -1; n <= 1; n++ )
+                {
+                    QRgb p = temp->pixel( x + m, y + n );
+                    r += qRed( p );
+                    g += qGreen( p );
+                    b += qBlue( p );
+                }
+            }
+            image->setPixel( x, y, qRgb( r / 9, g / 9, b / 9 ) );
+        }
+    }
+
+    this->convertFromImage(*image);
 }
 
 //WORKS
@@ -262,6 +285,7 @@ void Image::edge(QImage *image)
         return;
     }
 
+    //Weiss's code
     for ( int x = 1; x < temp->width() - 1; x++ )
     {
         for ( int y = 1; y < temp->height() - 1; y++ )
@@ -274,11 +298,40 @@ void Image::edge(QImage *image)
             image->setPixel( x, y, qRgb( e, e, e ) );
         }
     }
+
+    this->convertFromImage(*image);
 }
 
+//doesn't work
 void Image::emboss(QImage *image)
 {
+    if(image == NULL)
+    {
+        image = new QImage(*unModifiedImage);
+    }
 
+    if(image->isNull())
+    {
+        qDebug() << "Image::emboss -> Null reference";
+        return;
+    }
+
+    for ( int x = 0; x < image->width()-1; x++ )
+    {
+        for ( int y = 0; y < image->height()-1; y++ )
+        {
+            QRgb pixel = image->pixel( x, y );
+            QRgb lowerPixel = image->pixel(x+1, y+1);
+
+            int r = abs(qRed(pixel) - qRed(lowerPixel));
+            int g = abs(qGreen(pixel) - qGreen(lowerPixel));
+            int b = abs(qBlue(pixel) - qBlue(lowerPixel));
+            int avg = r*0.3 + g*0.59 + b*0.11;
+            image->setPixel( x, y, qRgb( avg, avg, avg ) );
+        }
+    }
+
+    this->convertFromImage(*image);
 }
 
 //WORKS
@@ -394,6 +447,7 @@ void Image::binaryThreshold(int threshold, QImage *image)
     this->convertFromImage(*image);
 }
 
+//Works okay-ish
 void Image::contrast(int lower, int upper, QImage *image)
 {
     if(image == NULL)
@@ -403,9 +457,34 @@ void Image::contrast(int lower, int upper, QImage *image)
 
     if(image->isNull())
     {
-        qDebug() << "Image::binaryThreshold -> Null reference";
+        qDebug() << "Image::contrast -> Null reference";
         return;
     }
+
+    if(lower == upper)
+    {
+        qDebug() << "Image::contrast -> lower == upper, aborting to prevent divide by 0";
+        return;
+    }
+
+    for(int r = 0; r < int(image->width()); r++)
+           for(int c = 0; c < int(image->height()); c++)
+           {
+               QRgb pixel = image->pixel(r, c);
+               int red = qRed(pixel), green = qGreen(pixel), blue = qBlue(pixel);
+
+               red = (red - lower) * 256.0 / (upper - lower) + 0.5;
+               green = (green - lower) * 256.0 / (upper - lower) + 0.5;
+               blue = (blue - lower) * 256.0 / (upper - lower) + 0.5;
+
+               red = (red < lower) ? 0 : (red > upper) ? 255 : red;
+               green = (green < lower) ? 0 : (green > upper) ? 255 : green;
+               blue = (blue < lower) ? 0 : (blue > upper) ? 255 : blue;
+               image->setPixel(r, c, qRgb(red, green, blue));
+           }
+
+
+    this->convertFromImage(*image);
 }
 /*
 void Image::balance(int brightness, int contrastLower, int contrastUpper, double gamma)
@@ -441,6 +520,7 @@ void Image::balance(int brightness, int contrastLower, int contrastUpper, double
     this->convertFromImage(*image);
 }
 */
+
 void Image::commit()
 {
     unModifiedImage = new QImage(this->toImage());

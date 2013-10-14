@@ -95,7 +95,7 @@ private slots:
     //Image
     void crop();
     void imgResize();
-    void rotate();
+    void rotate(const std::vector<double> &dialogValues);
     void balance(const std::vector<double> &dialogValues);
 
     //Dialogs
@@ -104,6 +104,8 @@ private slots:
     void gammaDialog();
     void binaryThresholdDialog();
     void balanceDialog();
+    void rotateDialog();
+    void contrastDialog();
 
     //Effects
     void grayScale();
@@ -117,6 +119,7 @@ private slots:
     void gamma(const std::vector<double> &dialogValues);
     void brightness(const std::vector<double> &dialogValues);
     void binaryThreshold(const std::vector<double> &dialogValues);
+    void contrast(const std::vector<double> &dialogValues);
 
 
     //About
@@ -216,6 +219,7 @@ private:
     QAction *gammaAct;
     QAction *brightnessAct;
     QAction *binaryThresholdAct;
+    QAction *contrastAct;
 
     //About
     QAction *aboutAct;

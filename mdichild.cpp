@@ -304,7 +304,9 @@ void MdiChild::sharpen()
 
 void MdiChild::soften()
 {
-
+    image.soften();
+    scene()->addPixmap(image);
+    setModified();
 }
 
 void MdiChild::negative()
@@ -328,7 +330,9 @@ void MdiChild::posterize()
 
 void MdiChild::edge()
 {
-
+    image.edge();
+    scene()->addPixmap(image);
+    setModified();
 }
 
 
@@ -336,7 +340,9 @@ void MdiChild::edge()
 
 void MdiChild::emboss()
 {
-
+    image.emboss();
+    scene()->addPixmap(image);
+    setModified();
 }
 
 void MdiChild::gamma(double gammaValue)
@@ -393,6 +399,11 @@ void MdiChild::commitImageChanges()
 void MdiChild::revertImageChanges()
 {
     image.revert();
+}
+
+void MdiChild::resetRotation()
+{
+    this->resetTransform();
 }
 
 void MdiChild::undo()
