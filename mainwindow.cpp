@@ -47,6 +47,7 @@
 #include <QtWidgets>
 #include <QStandardPaths>
 #include <QUrl>
+#include <QTransform>
 
 #include "mainwindow.h"
 #include "mdichild.h"
@@ -60,6 +61,7 @@ MainWindow::MainWindow()
     mdiArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
     setCentralWidget(mdiArea);
     connect(mdiArea, SIGNAL(subWindowActivated(QMdiSubWindow*)), this, SLOT(updateMenus()));
+    connect(mdiArea, SIGNAL(subWindowActivated(QMdiSubWindow*)), this, SLOT(handleZoomChanged()));
     windowMapper = new QSignalMapper(this);
     connect(windowMapper, SIGNAL(mapped(QWidget*)),this, SLOT(setActiveSubWindow(QWidget*)));
 
@@ -244,6 +246,7 @@ MdiChild *MainWindow::createMdiChild()
     connect(child, SIGNAL(copyAvailable(bool)),
             copyAct, SLOT(setEnabled(bool)));
 #endif
+    connect(child, SIGNAL(zoomChanged()), this, SLOT(handleZoomChanged()));
 
     return child;
 }
@@ -486,6 +489,16 @@ void MainWindow::createToolBars()
     fileToolBar->addAction(openAct);
     fileToolBar->addAction(saveAct);
 
+    zoombox = new QComboBox;
+    QStringList zoomLevels;
+    zoomLevels << "10%" << "25%" << "50%" << "75%" << "100%" << "125%" << "150%" << "200%" << "400%" << "800%" << "1600%" << "Fit to Window";
+    zoombox->addItems(zoomLevels);
+    zoombox->setEditable(true);
+    zoombox->setCurrentIndex(4);
+    zoombox->setFocusPolicy(Qt::ClickFocus);
+    fileToolBar->addWidget(zoombox);
+    connect(zoombox, SIGNAL(editTextChanged(QString)), this, SLOT(zoomTo(QString)));
+
 #ifndef QT_NO_CLIPBOARD
     editToolBar = addToolBar(tr("Edit"));
     editToolBar->addAction(cutAct);
@@ -577,7 +590,7 @@ void MainWindow::switchLayoutDirection()
 }
 
 /**************************************************************************//**
- * @brief Chanes the active QMdiSubWindow. Called by MainWindow::open(), and
+ * @brief Changes the active QMdiSubWindow. Called by MainWindow::open(), and
  * connected to some signal.
  *****************************************************************************/
 void MainWindow::setActiveSubWindow(QWidget *window)
@@ -585,8 +598,13 @@ void MainWindow::setActiveSubWindow(QWidget *window)
     if (!window)
         return;
     mdiArea->setActiveSubWindow(qobject_cast<QMdiSubWindow *>(window));
+    handleZoomChanged();
+    qDebug() << "in set active subwindow";
 }
 
+//------------------------------------------------------------------------------
+//              File
+//------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 //              New, Open, Save, Exit
 //------------------------------------------------------------------------------
@@ -634,7 +652,9 @@ void MainWindow::saveAs()
     }
 }
 
-
+//------------------------------------------------------------------------------
+//              Edit
+//------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 //              Copy, Cut, Paste
 //------------------------------------------------------------------------------
@@ -889,31 +909,86 @@ void MainWindow::binaryThreshold(const std::vector<double> &dialogValues)
     }
 }
 
-//------------------------------------------------------------------------------
-//                  Window
-//------------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+//                   Zooming
+//-----------------------------------------------------------------------------
 void MainWindow::zoomIn()
 {
-    if (activeMdiChild()) {
-        activeMdiChild()->scale(1.15, 1.15);
+    if (activeMdiChild())
+    {
+        if (activeMdiChild()->isZoomable())
+        {
+            activeMdiChild()->scale(1.15, 1.15);
+            handleZoomChanged();
+        }
     }
 }
 
 void MainWindow::zoomOut()
 {
-    if (activeMdiChild()) {
-        activeMdiChild()->scale(1/1.15, 1/1.15);
+    if (activeMdiChild())
+    {
+        if (activeMdiChild()->isZoomable())
+        {
+            activeMdiChild()->scale(1/1.15, 1/1.15);
+            handleZoomChanged();
+        }
     }
 }
 
-void MainWindow::zoomTo(double zoomLevel)
+
+void MainWindow::handleZoomChanged()
 {
-    if (activeMdiChild()) {
-        activeMdiChild()->resetMatrix();
-        //
+    if (activeMdiChild())
+    {
+        QString text = "Fit to Window";
+        if(!activeMdiChild()->isZoomable())
+        {
+            zoombox->setEditText(text);
+        }
 
+        else
+        {
+            QTransform transform;
+            transform = activeMdiChild()->transform();
+            qreal hScale = transform.m11();
+            text = QString::number(hScale * 100, 'f', 1) + "%";
+            qDebug() << "current zoom Level" << text;
+            zoombox->setEditText(text);
+        }
+        emit zoombox->editTextChanged(text);
     }
+}
 
+void MainWindow::zoomTo(QString text)
+{
+    if (activeMdiChild())
+    {
+        bool ok;
+        double factor;
+        activeMdiChild()->resetMatrix();
+
+        qDebug() << text;
+        if (text == "Fit to Window")
+        {
+            activeMdiChild()->setZoomable(false);
+            activeMdiChild()->fitInView(activeMdiChild()->scene()->itemsBoundingRect());
+            qDebug() << "Fit to the window";
+        }
+        else
+        {
+            activeMdiChild()->setZoomable(true);
+            text.remove("%");
+            factor = text.toDouble(&ok);
+            if(ok)
+            {
+                factor = factor/100;
+                activeMdiChild()->scale(factor, factor);
+            }
+
+        }
+    }
 }
 
 

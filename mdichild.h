@@ -56,6 +56,7 @@
 #include <QScrollArea>
 #include <QWheelEvent>
 #include <QGraphicsView>
+#include <QResizeEvent>
 #include <deque>
 #include "image.h"
 
@@ -76,6 +77,9 @@ public:
     QString currentFile() { return curFile; }
     void setModified(bool changed = true);
     bool isModified();
+    void setZoomable(bool canZoom = true);
+    bool isZoomable();
+
 
     //Image Effects
     void grayScale();
@@ -90,6 +94,8 @@ public:
     void brightness(int brightnessLevel);
     void binaryThreshold(int threshold);
     void contrast(int lower, int upper);
+
+
     //void balance(int brightness, int contrastLower, int contrastUpper, double gamma);
 
     void undo();
@@ -103,16 +109,22 @@ public slots:
 protected:
     void closeEvent(QCloseEvent *event);
 
+signals:
+    void zoomChanged();
 
 private:
     bool maybeSave();
     void setCurrentFile(const QString &fileName);
     QString strippedName(const QString &fullFileName);
-      void wheelEvent(QWheelEvent * event);
+
+    //Reimplemented functions.
+    void wheelEvent(QWheelEvent * event);
+    void resizeEvent(QResizeEvent * event);
 
     QString curFile;
     bool isUntitled;
     bool modified;
+    bool zoomable;
 
     Image image;
     std::deque<QImage> *undoStack;

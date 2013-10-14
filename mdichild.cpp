@@ -57,6 +57,7 @@ MdiChild::MdiChild()
     this->setAlignment(Qt::AlignCenter);
     isUntitled = true;
     modified = false;
+    zoomable = true;
 
     //Use ScrollHand Drag Mode to enable Panning
     setDragMode(ScrollHandDrag);
@@ -262,6 +263,27 @@ bool MdiChild::isModified()
     return modified;
 }
 
+/**************************************************************************//**
+ * @brief Sets the zoomable flag that indicates if the image can be zoomed.
+ * @param[in] canZoom - A flag indicating if zooming should be set to
+ * enabled. Default is true.
+ *****************************************************************************/
+void MdiChild::setZoomable(bool canZoom)
+{
+    zoomable = canZoom;
+}
+
+/**************************************************************************//**
+ * @brief Returns whether or not zooming is enabled.
+ *
+ * @returns true - The image can be zoomed.
+ * @returns false - The image has not be zoomed.
+ *****************************************************************************/
+bool MdiChild::isZoomable()
+{
+    return zoomable;
+}
+
 //-----------------------------------------------------------------------------
 //                   Image Effects
 //-----------------------------------------------------------------------------
@@ -310,26 +332,7 @@ void MdiChild::edge()
 }
 
 
-//-----------------------------------------------------------------------------
-//                   Zooming
-//-----------------------------------------------------------------------------
-void MdiChild::wheelEvent(QWheelEvent* event) {
 
-    setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
-
-    // Scale the view / do the zoom
-    double scaleFactor = 1.15;
-    if(event->delta() > 0) {
-        // Zoom in
-        scale(scaleFactor, scaleFactor);
-    } else {
-        // Zooming out
-        scale(1.0 / scaleFactor, 1.0 / scaleFactor);
-    }
-
-    // Don't call superclass handler here
-    // as wheel is normally used for moving scrollbars
-}
 
 void MdiChild::emboss()
 {
@@ -420,3 +423,48 @@ void MdiChild::redo()
         scene()->addPixmap(image);
     }
 }
+
+
+//-----------------------------------------------------------------------------
+//                   Re-implemented Functions
+//-----------------------------------------------------------------------------
+
+void MdiChild::wheelEvent(QWheelEvent* event) {
+
+    if(isZoomable())
+    {
+        //Zoom where the cursor is.
+        setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
+
+        // Scale the view / do the zoom
+        double scaleFactor = 1.15;
+        if(event->delta() > 0) {
+            // Zoom in
+            scale(scaleFactor, scaleFactor);
+        } else {
+            // Zooming out
+            scale(1.0 / scaleFactor, 1.0 / scaleFactor);
+        }
+
+        emit zoomChanged();
+        // Don't call superclass handler here
+        // as wheel is normally used for moving scrollbars
+    }
+    else
+    {
+        event->setAccepted(false);
+        QGraphicsView::wheelEvent(event);
+    }
+
+}
+
+
+void MdiChild::resizeEvent(QResizeEvent *event)
+{
+    if(!isZoomable())
+    {
+        fitInView(scene()->itemsBoundingRect());
+    }
+    QGraphicsView::resizeEvent(event);
+}
+

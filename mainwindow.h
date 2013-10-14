@@ -52,6 +52,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QComboBox>
+#include <QStringList>
 
 class MdiChild;
 QT_BEGIN_NAMESPACE
@@ -116,6 +118,7 @@ private slots:
     void brightness(const std::vector<double> &dialogValues);
     void binaryThreshold(const std::vector<double> &dialogValues);
 
+
     //About
     void about();
 
@@ -129,7 +132,13 @@ private slots:
     void setActiveSubWindow(QWidget *window);
     void zoomIn();
     void zoomOut();
-    void zoomTo(double zoomLevel);
+    void zoomTo(QString text);
+
+public slots:
+    void handleZoomChanged();
+
+signals:
+    void zoomChanged();
 
 private:
     //========Functions========
@@ -157,6 +166,7 @@ private:
     //========ToolBars========
     QToolBar *fileToolBar;
     QToolBar *editToolBar;
+    QComboBox *zoombox;
 
     //========Actions========
     //New, Open, Save, Exit
