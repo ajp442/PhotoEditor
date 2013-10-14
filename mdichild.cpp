@@ -213,7 +213,6 @@ bool MdiChild::maybeSave()
         else if (ret == QMessageBox::Cancel)
             return false;
     }
-
     return true;
 }
 
