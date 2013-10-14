@@ -302,9 +302,36 @@ void Image::edge(QImage *image)
     this->convertFromImage(*image);
 }
 
+//doesn't work
 void Image::emboss(QImage *image)
 {
+    if(image == NULL)
+    {
+        image = new QImage(*unModifiedImage);
+    }
 
+    if(image->isNull())
+    {
+        qDebug() << "Image::emboss -> Null reference";
+        return;
+    }
+
+    for ( int x = 0; x < image->width()-1; x++ )
+    {
+        for ( int y = 0; y < image->height()-1; y++ )
+        {
+            QRgb pixel = image->pixel( x, y );
+            QRgb lowerPixel = image->pixel(x+1, y+1);
+
+            int r = abs(qRed(pixel) - qRed(lowerPixel));
+            int g = abs(qGreen(pixel) - qGreen(lowerPixel));
+            int b = abs(qBlue(pixel) - qBlue(lowerPixel));
+            int avg = r*0.3 + g*0.59 + b*0.11;
+            image->setPixel( x, y, qRgb( avg, avg, avg ) );
+        }
+    }
+
+    this->convertFromImage(*image);
 }
 
 //WORKS
@@ -420,7 +447,7 @@ void Image::binaryThreshold(int threshold, QImage *image)
     this->convertFromImage(*image);
 }
 
-//Doesn't work
+//Works okay-ish
 void Image::contrast(int lower, int upper, QImage *image)
 {
     if(image == NULL)
@@ -434,18 +461,28 @@ void Image::contrast(int lower, int upper, QImage *image)
         return;
     }
 
+    if(lower == upper)
+    {
+        qDebug() << "Image::contrast -> lower == upper, aborting to prevent divide by 0";
+        return;
+    }
+
     for(int r = 0; r < int(image->width()); r++)
            for(int c = 0; c < int(image->height()); c++)
            {
                QRgb pixel = image->pixel(r, c);
                int red = qRed(pixel), green = qGreen(pixel), blue = qBlue(pixel);
 
-               red = (red < lower) ? 0 : (red > upper) ? 255 : (red - lower) * 256.0 / (upper - lower) + 0.5;
-               green = (green < lower) ? 0 : (green > upper) ? 255 : (green - lower) * 256.0 / (upper - lower) + 0.5;
-               blue = (blue < lower) ? 0 : (blue > upper) ? 255 : (blue - lower) * 256.0 / (upper - lower) + 0.5;
+               red = (red - lower) * 256.0 / (upper - lower) + 0.5;
+               green = (green - lower) * 256.0 / (upper - lower) + 0.5;
+               blue = (blue - lower) * 256.0 / (upper - lower) + 0.5;
 
+               red = (red < lower) ? 0 : (red > upper) ? 255 : red;
+               green = (green < lower) ? 0 : (green > upper) ? 255 : green;
+               blue = (blue < lower) ? 0 : (blue > upper) ? 255 : blue;
                image->setPixel(r, c, qRgb(red, green, blue));
            }
+
 
     this->convertFromImage(*image);
 }

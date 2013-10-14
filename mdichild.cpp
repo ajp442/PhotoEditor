@@ -337,7 +337,9 @@ void MdiChild::wheelEvent(QWheelEvent* event) {
 
 void MdiChild::emboss()
 {
-
+    image.emboss();
+    scene()->addPixmap(image);
+    setModified();
 }
 
 void MdiChild::gamma(double gammaValue)

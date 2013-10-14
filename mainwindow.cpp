@@ -917,7 +917,12 @@ void MainWindow::edge()
 
 void MainWindow::emboss()
 {
-
+    if (activeMdiChild())
+    {
+        activeMdiChild()->emboss();
+        activeMdiChild()->commitImageChanges();
+        statusBar()->showMessage(tr("Image embossed"), 2000);
+    }
 }
 
 void MainWindow::gamma(const std::vector<double> &dialogValues)
