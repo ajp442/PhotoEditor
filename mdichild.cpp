@@ -102,6 +102,8 @@ bool MdiChild::loadFile(const QString &fileName)
             return false;
         }
 
+        this->commitImageChanges();
+
         QGraphicsScene *scene = new QGraphicsScene;
         scene->addPixmap(image);
         this->setScene(scene);
@@ -394,12 +396,15 @@ void MdiChild::revertImageChanges()
 void MdiChild::undo()
 {
     qDebug() << "Entered MdiChild::undo()";
+    qDebug() << undoStack->size();
     if(!undoStack->empty())
     {
         qDebug() << "Popping off undoStack";
-        redoStack->push_front(image.toImage());
-        image.fromImage(undoStack->front());  //I mistakingly thought this would set my image, but it just returns the pixmap
         undoStack->pop_front();
+        redoStack->push_front(image.toImage());
+        image.convertFromImage(undoStack->front());
+        image.commit();
+        scene()->addPixmap(image);
     }
 }
 
@@ -409,8 +414,10 @@ void MdiChild::redo()
     if(!redoStack->empty())
     {
         qDebug() << "Popping off redoStack";
-        undoStack->push_front(image.toImage());
-        image.fromImage(redoStack->front());  //I mistakingly thought this would set my image, but it just returns the pixmap
         redoStack->pop_front();
+        undoStack->push_front(image.toImage());
+        image.convertFromImage(redoStack->front());
+        image.commit();
+        scene()->addPixmap(image);
     }
 }
