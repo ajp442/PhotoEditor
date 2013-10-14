@@ -394,6 +394,7 @@ void Image::binaryThreshold(int threshold, QImage *image)
     this->convertFromImage(*image);
 }
 
+//Doesn't work
 void Image::contrast(int lower, int upper, QImage *image)
 {
     if(image == NULL)
@@ -403,9 +404,24 @@ void Image::contrast(int lower, int upper, QImage *image)
 
     if(image->isNull())
     {
-        qDebug() << "Image::binaryThreshold -> Null reference";
+        qDebug() << "Image::contrast -> Null reference";
         return;
     }
+
+    for(int r = 0; r < int(image->width()); r++)
+           for(int c = 0; c < int(image->height()); c++)
+           {
+               QRgb pixel = image->pixel(r, c);
+               int red = qRed(pixel), green = qGreen(pixel), blue = qBlue(pixel);
+
+               red = (red < lower) ? 0 : (red > upper) ? 255 : (red - lower) * 256.0 / (upper - lower) + 0.5;
+               green = (green < lower) ? 0 : (green > upper) ? 255 : (green - lower) * 256.0 / (upper - lower) + 0.5;
+               blue = (blue < lower) ? 0 : (blue > upper) ? 255 : (blue - lower) * 256.0 / (upper - lower) + 0.5;
+
+               image->setPixel(r, c, qRgb(red, green, blue));
+           }
+
+    this->convertFromImage(*image);
 }
 /*
 void Image::balance(int brightness, int contrastLower, int contrastUpper, double gamma)

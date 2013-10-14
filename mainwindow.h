@@ -103,6 +103,7 @@ private slots:
     void binaryThresholdDialog();
     void balanceDialog();
     void rotateDialog();
+    void contrastDialog();
 
     //Effects
     void grayScale();
@@ -116,6 +117,7 @@ private slots:
     void gamma(const std::vector<double> &dialogValues);
     void brightness(const std::vector<double> &dialogValues);
     void binaryThreshold(const std::vector<double> &dialogValues);
+    void contrast(const std::vector<double> &dialogValues);
 
     //About
     void about();
@@ -207,6 +209,7 @@ private:
     QAction *gammaAct;
     QAction *brightnessAct;
     QAction *binaryThresholdAct;
+    QAction *contrastAct;
 
     //About
     QAction *aboutAct;

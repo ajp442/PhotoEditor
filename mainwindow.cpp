@@ -103,8 +103,12 @@ void MainWindow::updateMenus()
     saveAct->setEnabled(hasMdiChild);
     saveAsAct->setEnabled(hasMdiChild);
 #ifndef QT_NO_CLIPBOARD
+    copyAct->setEnabled(hasMdiChild);
+    cutAct->setEnabled(hasMdiChild);
     pasteAct->setEnabled(hasMdiChild);
 #endif
+    undoAct->setEnabled(hasMdiChild);
+    redoAct->setEnabled(hasMdiChild);
     closeAct->setEnabled(hasMdiChild);
     closeAllAct->setEnabled(hasMdiChild);
     tileAct->setEnabled(hasMdiChild);
@@ -183,6 +187,9 @@ void MainWindow::updateEffectsMenu()
 
     effectsMenu->addAction(binaryThresholdAct);
     binaryThresholdAct->setEnabled(hasMdiChild);
+
+    effectsMenu->addAction(contrastAct);
+    contrastAct->setEnabled(hasMdiChild);
 
 }
 
@@ -301,11 +308,13 @@ void MainWindow::createActions()
 #endif
 
     //================Undo, Redo=======================
-    undoAct = new QAction(tr("Undo"), this);
+    undoAct = new QAction(tr("&Undo"), this);
+    undoAct->setShortcut(QKeySequence::Undo);
     undoAct->setStatusTip(tr("Undo the last image effect on the current window"));
     connect(undoAct, SIGNAL(triggered()), this, SLOT(undo()));
 
-    redoAct = new QAction(tr("Redo"), this);
+    redoAct = new QAction(tr("&Redo"), this);
+    redoAct->setShortcut(QKeySequence::Redo);
     redoAct->setStatusTip(tr("Redo the last command undone"));
     connect(redoAct, SIGNAL(triggered()), this, SLOT(redo()));
 
@@ -424,6 +433,9 @@ void MainWindow::createActions()
     binaryThresholdAct->setStatusTip(tr(""));
     connect(binaryThresholdAct, SIGNAL(triggered()), this, SLOT(binaryThresholdDialog()));
 
+    contrastAct = new QAction(tr("Contrast"), this);
+    contrastAct->setStatusTip(tr(""));
+    connect(contrastAct, SIGNAL(triggered()), this, SLOT(contrastDialog()));
 }
 
 
@@ -667,6 +679,7 @@ void MainWindow::undo()
     if(activeMdiChild())
     {
         activeMdiChild()->undo();
+        statusBar()->showMessage(tr("Undo committed"), 2000);
     }
 }
 
@@ -675,6 +688,7 @@ void MainWindow::redo()
     if(activeMdiChild())
     {
         activeMdiChild()->redo();
+        statusBar()->showMessage(tr("Redid last undo"), 2000);
     }
 }
 
@@ -811,8 +825,25 @@ void MainWindow::rotateDialog()
         dialog *rotate_dialog = new dialog(tr("Rotation"));
         rotate_dialog->addChild(tr("Angle:"), angle, angleMin, angleMax);
 
+        //no reason to connect OK, since it automatically changes the view without the need for .commit
         connect(rotate_dialog, SIGNAL(valueChanged(std::vector<double>)), this, SLOT(rotate(std::vector<double>)));
         connect(rotate_dialog, SIGNAL(cancelled()), activeMdiChild(), SLOT(resetRotation()));
+    }
+}
+
+void MainWindow::contrastDialog()
+{
+    if(activeMdiChild())
+    {
+        int lower = 0, upper = 255, min = 0, max = 255;
+
+        dialog *contrast_dialog = new dialog(tr("Contrast"));
+        contrast_dialog->addChild("Lower:", lower, min, max);
+        contrast_dialog->addChild("Upper:", upper, min, max);
+
+        connect(contrast_dialog, SIGNAL(valueChanged(std::vector<double>)), this, SLOT(contrast(std::vector<double>)));
+        connect(contrast_dialog, SIGNAL(cancelled()), activeMdiChild(), SLOT(revertImageChanges()));
+        connect(contrast_dialog, SIGNAL(accepted()), activeMdiChild(), SLOT(commitImageChanges()));
     }
 }
 
@@ -905,6 +936,15 @@ void MainWindow::binaryThreshold(const std::vector<double> &dialogValues)
     {
         activeMdiChild()->binaryThreshold(dialogValues[0]);
         statusBar()->showMessage(tr("Binary Threshold commited"), 2000);
+    }
+}
+
+void MainWindow::contrast(const std::vector<double> &dialogValues)
+{
+    if(activeMdiChild())
+    {
+        activeMdiChild()->contrast(dialogValues[0], dialogValues[1]);
+        statusBar()->showMessage(tr("Contrast altered"), 2000);
     }
 }
 
