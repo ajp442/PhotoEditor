@@ -396,7 +396,7 @@ void MdiChild::undo()
 {
     qDebug() << "Entered MdiChild::undo()";
     qDebug() << undoStack->size();
-    if(!undoStack->empty())
+    if(undoStack->size() > 1)
     {
         qDebug() << "Popping off undoStack";
         undoStack->pop_front();
@@ -413,10 +413,10 @@ void MdiChild::redo()
     if(!redoStack->empty())
     {
         qDebug() << "Popping off redoStack";
-        redoStack->pop_front();
         undoStack->push_front(image.toImage());
         image.convertFromImage(redoStack->front());
         image.commit();
+        redoStack->pop_front();
         scene()->addPixmap(image);
     }
 }
