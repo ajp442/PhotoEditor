@@ -49,6 +49,19 @@ Help: About
  * implementations. Some image processing operations are already implemented in the QImage and
  * QPixmap classes of Qt.
  *
+ * @par Extra Features
+ * \li <b>Scroll Zooming</b> - Can zoom by scrolling and will scrool to the area where you cursor is.
+ * \li <b>Fit to Window</b> - Will fit image to window and not allow zooming.
+ * \li <b>Custom Zoom Factor</b> - Can edit the text in the zoom combobox for custom zoom level.
+ * \li <b>Zoom Combobox</b> - Can always see what the zoom level of the selected window is.
+ * \li <b>Zoom non-selected windows</b> - Can scroll zoom windows that are not selected.
+ * \li <b>Zoom Hot-kyes</b> - Zoom with ctrl++ and ctrl+-, which are dynamically enabled/disabled.
+ * \li <b></b>
+ * \li <b></b>
+ * \li <b></b>
+ * \li <b></b>
+ * \li <b></b>
+ *
  * @authors Josh Schultz, Paul Blazi, Andrew Pierson
  *
  * @date October 06, 2013
@@ -81,7 +94,15 @@ $ qmake...
    Sep  26, 2013  Program assigned.
    Sep  28, 2013  Initial Commits.
    Oct  06, 2013  Re-structured program and added doxygen-style comments.
-   Oct  10, 2013  Program Due.
+   Oct  07, 2013  Sharpen, Image Class for easy manipulation.
+   Oct  10, 2013  Dialog Class for code reuseabilaty.
+   Oct  11, 2013  Gamma, despeckle, brightness
+   Oct  12, 2013  Started working on zooming.
+   Oct  13, 2013  Contrast, soften, edge detection, rotation.
+   Oct  13, 2013  Redo and Undo.
+   Oct  14, 2013  Finalized zooming features.
+   Oct  14, 2013  Added doxygen style comments.
+   Oct  15, 2013  Program Due.
    @endverbatim
  *
  *****************************************************************************/

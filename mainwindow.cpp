@@ -1058,11 +1058,15 @@ void MainWindow::zoomTo(QString text)
 
         if (text == "Fit to Window")
         {
+            zoomInAct->setEnabled(false);
+            zoomOutAct->setEnabled(false);
             activeMdiChild()->setZoomable(false);
             activeMdiChild()->fitInView(activeMdiChild()->scene()->itemsBoundingRect());
         }
         else
         {
+            zoomInAct->setEnabled(true);
+            zoomOutAct->setEnabled(true);
             activeMdiChild()->resetMatrix();
             activeMdiChild()->setZoomable(true);
             text.remove("%");
