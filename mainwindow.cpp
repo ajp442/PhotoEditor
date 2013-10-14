@@ -371,7 +371,7 @@ void MainWindow::createActions()
 
     rotateAct = new QAction(tr("Rotate"), this);
     rotateAct->setStatusTip(tr(""));
-    connect(rotateAct, SIGNAL(triggered()), this, SLOT(rotate()));
+    connect(rotateAct, SIGNAL(triggered()), this, SLOT(rotateDialog()));
 
     balanceAct = new QAction(tr("Balance (Not Implemented)"), this);
     balanceAct->setStatusTip(tr(""));
@@ -691,9 +691,14 @@ void MainWindow::imgResize()
 
 }
 
-void MainWindow::rotate()
+void MainWindow::rotate(const std::vector<double> &dialogValues)
 {
-
+    if(activeMdiChild())
+    {
+        activeMdiChild()->resetRotation();
+        activeMdiChild()->rotate(dialogValues[0]);
+        statusBar()->showMessage(tr("Image Rotated"), 2000);
+    }
 }
 
 void MainWindow::balance(const std::vector<double> &dialogValues)
@@ -794,6 +799,20 @@ void MainWindow::balanceDialog()
         connect(binaryThreshold_dialog, SIGNAL(valueChanged(std::vector<double>)), this, SLOT(balance(std::vector<double>)));
         connect(binaryThreshold_dialog, SIGNAL(cancelled()), activeMdiChild(), SLOT(revertImageChanges()));
         connect(binaryThreshold_dialog, SIGNAL(accepted()), activeMdiChild(), SLOT(commitImageChanges()));
+    }
+}
+
+void MainWindow::rotateDialog()
+{
+    if(activeMdiChild())
+    {
+        int angle = 0, angleMin = 0, angleMax = 360;
+
+        dialog *rotate_dialog = new dialog(tr("Rotation"));
+        rotate_dialog->addChild(tr("Angle:"), angle, angleMin, angleMax);
+
+        connect(rotate_dialog, SIGNAL(valueChanged(std::vector<double>)), this, SLOT(rotate(std::vector<double>)));
+        connect(rotate_dialog, SIGNAL(cancelled()), activeMdiChild(), SLOT(resetRotation()));
     }
 }
 

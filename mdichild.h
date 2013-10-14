@@ -92,12 +92,14 @@ public:
     void contrast(int lower, int upper);
     //void balance(int brightness, int contrastLower, int contrastUpper, double gamma);
 
+
     void undo();
     void redo();
 
 public slots:
     void commitImageChanges();
     void revertImageChanges();
+    void resetRotation();
 
 
 protected:

@@ -393,6 +393,11 @@ void MdiChild::revertImageChanges()
     image.revert();
 }
 
+void MdiChild::resetRotation()
+{
+    this->resetTransform();
+}
+
 void MdiChild::undo()
 {
     qDebug() << "Entered MdiChild::undo()";

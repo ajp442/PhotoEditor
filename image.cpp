@@ -441,6 +441,7 @@ void Image::balance(int brightness, int contrastLower, int contrastUpper, double
     this->convertFromImage(*image);
 }
 */
+
 void Image::commit()
 {
     unModifiedImage = new QImage(this->toImage());
