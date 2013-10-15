@@ -14,9 +14,10 @@ dialog::dialog(QString title)
     QPushButton *okButton = new QPushButton(QObject::tr("OK"));
     QPushButton *cancelButton = new QPushButton(QObject::tr("Cancel"));
 
-    //When Cancel is pressed, close the dialog and emit cancelled()
+    //When Cancel or [X] is pressed, close the dialog and emit cancelled()
     QObject::connect(cancelButton, SIGNAL(clicked()), container, SLOT(close()));
     connect(cancelButton, SIGNAL(clicked()), this, SIGNAL(cancelled()));
+    connect(container, SIGNAL(rejected()), this, SIGNAL(cancelled()));
 
     //When OK is pressed, close the dialog and emit accepted()
     QObject::connect(okButton, SIGNAL(clicked()), container, SLOT(close()));
