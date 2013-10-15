@@ -62,6 +62,7 @@ MainWindow::MainWindow()
     setCentralWidget(mdiArea);
     connect(mdiArea, SIGNAL(subWindowActivated(QMdiSubWindow*)), this, SLOT(updateMenus()));
     connect(mdiArea, SIGNAL(subWindowActivated(QMdiSubWindow*)), this, SLOT(handleZoomChanged()));
+    //connect(activeMdiChild(), SIGNAL(areaSelectedChanged()), this, SLOT(updateClipboardItems()));
     windowMapper = new QSignalMapper(this);
     connect(windowMapper, SIGNAL(mapped(QWidget*)),this, SLOT(setActiveSubWindow(QWidget*)));
 
@@ -70,6 +71,7 @@ MainWindow::MainWindow()
     createToolBars();
     createStatusBar();
     updateMenus();
+    updateClipboardItems();
 
     readSettings();
 
@@ -101,14 +103,10 @@ void MainWindow::closeEvent(QCloseEvent *event)
  *****************************************************************************/
 void MainWindow::updateMenus()
 {
+    connect(activeMdiChild(), SIGNAL(areaSelectedChanged()), this, SLOT(updateClipboardItems()));
     bool hasMdiChild = (activeMdiChild() != 0);
     saveAct->setEnabled(hasMdiChild);
     saveAsAct->setEnabled(hasMdiChild);
-#ifndef QT_NO_CLIPBOARD
-    copyAct->setEnabled(hasMdiChild);
-    cutAct->setEnabled(hasMdiChild);
-    pasteAct->setEnabled(hasMdiChild);
-#endif
     undoAct->setEnabled(hasMdiChild);
     redoAct->setEnabled(hasMdiChild);
     closeAct->setEnabled(hasMdiChild);
@@ -121,11 +119,18 @@ void MainWindow::updateMenus()
     zoomOutAct->setEnabled(hasMdiChild);
     separatorAct->setVisible(hasMdiChild);
 
+    updateClipboardItems();
+}
+
+void MainWindow::updateClipboardItems()
+{
+    //qDebug() << "MainWindow::updateClipboardItems updated";
+    bool hasMdiChild  = (activeMdiChild() != 0);
 #ifndef QT_NO_CLIPBOARD
-//    bool hasSelection = (activeMdiChild() &&
-//                         activeMdiChild()->textCursor().hasSelection());
-//    cutAct->setEnabled(hasSelection);
-//    copyAct->setEnabled(hasSelection);
+    copyAct->setEnabled(hasMdiChild && activeMdiChild()->isAreaSelected());
+    cutAct->setEnabled(hasMdiChild && activeMdiChild()->isAreaSelected());
+    pasteAct->setEnabled(hasMdiChild && !QApplication::clipboard()->image().isNull());
+    cropAct->setEnabled(hasMdiChild && activeMdiChild()->isAreaSelected());
 #endif
 }
 
@@ -137,7 +142,7 @@ void MainWindow::updateImageMenu()
     bool hasMdiChild = (activeMdiChild() != 0);
 
     imageMenu->addAction(cropAct);
-    cropAct->setEnabled(hasMdiChild);
+    //cropAct->setEnabled(hasMdiChild);
 
     imageMenu->addAction(imgResizeAct);
     imgResizeAct->setEnabled(hasMdiChild);

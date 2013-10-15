@@ -58,6 +58,7 @@ MdiChild::MdiChild()
     isUntitled = true;
     modified = false;
     zoomable = true;
+    areaSelected = false;
 
     rubberBand = new QRubberBand(QRubberBand::Rectangle, this);
     clipBoard = QApplication::clipboard();

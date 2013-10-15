@@ -127,6 +127,7 @@ private slots:
 
     //Windows & Menus
     void updateMenus();
+    void updateClipboardItems();
     void updateImageMenu();
     void updateEffectsMenu();
     void updateWindowMenu();
