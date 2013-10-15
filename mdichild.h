@@ -142,7 +142,9 @@ private:
     //Copy/Paste
     QClipboard* clipBoard;
     bool areaSelected;
+
     bool pasteRepositioning;
+    void setPasteRepositioning(bool value);
 
     QString curFile;
     bool isUntitled;

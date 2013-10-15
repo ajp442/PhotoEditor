@@ -299,6 +299,11 @@ void MdiChild::setAreaSelected(bool value)
     emit areaSelectedChanged();
 }
 
+void MdiChild::setPasteRepositioning(bool value)
+{
+    pasteRepositioning = value;
+}
+
 //-----------------------------------------------------------------------------
 //                   Image Effects
 //-----------------------------------------------------------------------------
@@ -479,6 +484,7 @@ void MdiChild::paste()
         pasteItem = scene()->addPixmap(clipImage);
         pasteItem->setFlag(QGraphicsItem::ItemIsMovable);
         setModified();
+        setPasteRepositioning(true);
     }
 }
 
