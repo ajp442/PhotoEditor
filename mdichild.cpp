@@ -502,6 +502,23 @@ void MdiChild::crop()
     setAreaSelected(false);
 }
 
+bool MdiChild::undoEnabled()
+{
+    if(undoStack->size() > 1)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+bool MdiChild::redoEnabled()
+{
+    return !redoStack->empty();
+}
+
 
 //-----------------------------------------------------------------------------
 //                   Re-implemented Functions
