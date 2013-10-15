@@ -60,7 +60,7 @@ MdiChild::MdiChild()
     zoomable = true;
 
     //Use Scroll and Drag Mode to enable Panning
-    setDragMode(ScrollHandDrag);
+    setDragMode(NoDrag);
 
     undoStack = new std::deque<QImage>(0);
     redoStack = new std::deque<QImage>(0);

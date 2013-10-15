@@ -126,6 +126,7 @@ private:
     QString curFile;
     bool isUntitled;
     bool modified;
+
     bool zoomable;
 
     Image image;
