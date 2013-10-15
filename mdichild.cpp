@@ -109,7 +109,7 @@ bool MdiChild::loadFile(const QString &fileName)
         this->commitImageChanges();
 
         QGraphicsScene *scene = new QGraphicsScene;
-        scene->addPixmap(image);
+        pixmap = scene->addPixmap(image);
         this->setScene(scene);
 
         setCurrentFile(fileName);
@@ -293,7 +293,7 @@ bool MdiChild::isZoomable()
 void MdiChild::grayScale()
 {
     image.grayscale();
-    scene()->addPixmap(image);
+    pixmap->setPixmap(image);
     setModified();
 }
 
@@ -301,28 +301,28 @@ void MdiChild::grayScale()
 void MdiChild::sharpen()
 {
     image.sharpen();
-    scene()->addPixmap(image);
+    pixmap->setPixmap(image);
     setModified();
 }
 
 void MdiChild::soften()
 {
     image.soften();
-    scene()->addPixmap(image);
+    pixmap->setPixmap(image);
     setModified();
 }
 
 void MdiChild::negative()
 {
     image.negative();
-    scene()->addPixmap(image);
+    pixmap->setPixmap(image);
     setModified();
 }
 
 void MdiChild::despeckle(int threshold)
 {
     image.despeckle(threshold);
-    scene()->addPixmap(image);
+    pixmap->setPixmap(image);
     setModified();
 }
 
@@ -334,7 +334,7 @@ void MdiChild::posterize()
 void MdiChild::edge()
 {
     image.edge();
-    scene()->addPixmap(image);
+    pixmap->setPixmap(image);
     setModified();
 }
 
@@ -344,35 +344,35 @@ void MdiChild::edge()
 void MdiChild::emboss()
 {
     image.emboss();
-    scene()->addPixmap(image);
+    pixmap->setPixmap(image);
     setModified();
 }
 
 void MdiChild::gamma(double gammaValue)
 {
     image.gamma(gammaValue);
-    scene()->addPixmap(image);
+    pixmap->setPixmap(image);
     setModified();
 }
 
 void MdiChild::brightness(int brightnessLevel)
 {
     image.brightness(brightnessLevel);
-    scene()->addPixmap(image);
+    pixmap->setPixmap(image);
     setModified();
 }
 
 void MdiChild::binaryThreshold(int threshold)
 {
     image.binaryThreshold(threshold);
-    scene()->addPixmap(image);
+    pixmap->setPixmap(image);
     setModified();
 }
 
 void MdiChild::contrast(int lower, int upper)
 {
     image.contrast(lower, upper);
-    scene()->addPixmap(image);
+    pixmap->setPixmap(image);
     setModified();
 }
 /*
@@ -422,7 +422,8 @@ void MdiChild::undo()
         redoStack->push_front(image.toImage());
         image.convertFromImage(undoStack->front());
         image.commit();
-        scene()->addPixmap(image);
+        pixmap->setPixmap(image);
+        scene()->setSceneRect(pixmap->boundingRect());
     }
 }
 
@@ -436,7 +437,8 @@ void MdiChild::redo()
         image.convertFromImage(redoStack->front());
         image.commit();
         redoStack->pop_front();
-        scene()->addPixmap(image);
+        pixmap->setPixmap(image);
+        scene()->setSceneRect(pixmap->boundingRect());
     }
 }
 
@@ -460,7 +462,9 @@ void MdiChild::paste()
     if(!clipImage.isNull())
     {
         image.convertFromImage(clipImage);
-        scene()->addPixmap(image);
+        pixmap->setPixmap(image);
+        scene()->setSceneRect(pixmap->boundingRect());
+        setModified();
     }
 }
 

@@ -59,6 +59,8 @@
 #include <QResizeEvent>
 #include <QRubberBand>
 #include <deque>
+#include <QGraphicsPixmapItem>
+#include <QRectF>
 #include "image.h"
 
 class MdiChild : public QGraphicsView
@@ -145,6 +147,7 @@ private:
     bool zoomable;
 
     Image image;
+    QGraphicsPixmapItem *pixmap;
     std::deque<QImage> *undoStack;
     std::deque<QImage> *redoStack;
 };
