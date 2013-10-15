@@ -110,6 +110,7 @@ bool MdiChild::loadFile(const QString &fileName)
         this->commitImageChanges();
 
         QGraphicsScene *scene = new QGraphicsScene;
+        scene->setBackgroundBrush(QBrush(QColor(0,0,0,48)));
         pixmap = scene->addPixmap(image);
         this->setScene(scene);
 
@@ -466,7 +467,7 @@ void MdiChild::redo()
 void MdiChild::copy()
 {
     if(areaSelected){
-        QImage copyImage = image.copy(QRect(origin, endPoint)).toImage();
+        QImage copyImage = image.copy(QRect((origin - pixmap->scenePos()).toPoint(), (endPoint - pixmap->scenePos()).toPoint())).toImage();
         clipBoard->setImage(copyImage);
     }
 
