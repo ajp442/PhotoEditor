@@ -57,6 +57,7 @@
 #include <QWheelEvent>
 #include <QGraphicsView>
 #include <QResizeEvent>
+#include <QRubberBand>
 #include <deque>
 #include "image.h"
 
@@ -95,6 +96,8 @@ public:
     void binaryThreshold(int threshold);
     void contrast(int lower, int upper);
 
+    void copy();
+    void paste();
 
     //void balance(int brightness, int contrastLower, int contrastUpper, double gamma);
 
@@ -122,6 +125,18 @@ private:
     //Reimplemented functions.
     void wheelEvent(QWheelEvent * event);
     void resizeEvent(QResizeEvent * event);
+    void mousePressEvent(QMouseEvent *event);
+    void mouseMoveEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
+
+    //RubberBanding
+    QPoint origin;
+    QPoint endPoint;
+    QRubberBand* rubberBand;
+
+    //Copy/Paste
+    QClipboard* clipBoard;
+    bool copyAllowed;
 
     QString curFile;
     bool isUntitled;

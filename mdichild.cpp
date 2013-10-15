@@ -59,7 +59,9 @@ MdiChild::MdiChild()
     modified = false;
     zoomable = true;
 
-    //Use Scroll and Drag Mode to enable Panning
+    rubberBand = new QRubberBand(QRubberBand::Rectangle, this);
+    clipBoard = QApplication::clipboard();
+
     setDragMode(NoDrag);
 
     undoStack = new std::deque<QImage>(0);
@@ -68,6 +70,7 @@ MdiChild::MdiChild()
 
 MdiChild::~MdiChild()
 {
+    delete rubberBand;
 }
 
 /**************************************************************************//**
@@ -389,11 +392,13 @@ void MdiChild::commitImageChanges()
     redoStack->clear();
     undoStack->push_front(image.toImage());
     //prevent the stack from storing 'too much'
-    if(undoStack->size() > 6)
+    if(undoStack->size() > 12)
     {
         qDebug() << "MdiChild -> undoStack getting too large, popping off oldest value";
         undoStack->pop_back();
     }
+
+    //scene()->setSceneRect(image.rect());
 }
 
 void MdiChild::revertImageChanges()
@@ -435,6 +440,30 @@ void MdiChild::redo()
     }
 }
 
+//-----------------------------------------------------------------------------
+//                   Copy / Paste
+//-----------------------------------------------------------------------------
+
+void MdiChild::copy()
+{
+    if(copyAllowed){
+        QImage copyImage = image.copy(QRect(origin, endPoint)).toImage();
+        clipBoard->setImage(copyImage);
+    }
+
+    rubberBand->hide();
+}
+
+void MdiChild::paste()
+{
+    QImage clipImage = clipBoard->image();
+    if(!clipImage.isNull())
+    {
+        image.convertFromImage(clipImage);
+        scene()->addPixmap(image);
+    }
+}
+
 
 //-----------------------------------------------------------------------------
 //                   Re-implemented Functions
@@ -470,6 +499,44 @@ void MdiChild::wheelEvent(QWheelEvent* event) {
         QGraphicsView::wheelEvent(event);
     }
 
+}
+
+/**************************************************************************//**
+ * @brief Starts rubberbanding action, then completes the base mousePressEvent.
+ *****************************************************************************/
+void MdiChild::mousePressEvent(QMouseEvent *event)
+{
+    rubberBand->hide();
+    copyAllowed = false;
+
+    origin = event->pos();
+    rubberBand->setGeometry(QRect(origin, QSize()));
+    rubberBand->show();
+
+    QGraphicsView::mousePressEvent(event);
+}
+
+/**************************************************************************//**
+ * @brief Resizes the rubberband from the start of the press to the current
+ * mous position, then completes the base mouseMoveEvent.
+ *****************************************************************************/
+void MdiChild::mouseMoveEvent(QMouseEvent *event)
+{
+    endPoint = event->pos();
+    rubberBand->setGeometry(QRect(origin, endPoint));
+
+    copyAllowed = true;
+
+    QGraphicsView::mouseMoveEvent(event);
+}
+
+/**************************************************************************//**
+ * @brief Finishes tracking the rubberband, then completes the base
+ * mouseReleaseEvent.
+ *****************************************************************************/
+void MdiChild::mouseReleaseEvent(QMouseEvent *event)
+{
+    QGraphicsView::mouseReleaseEvent(event);
 }
 
 /**************************************************************************//**

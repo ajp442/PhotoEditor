@@ -679,14 +679,20 @@ void MainWindow::cut()
 
 void MainWindow::copy()
 {
-//    if (activeMdiChild())
-//        activeMdiChild()->copy();
+    if (activeMdiChild())
+    {
+        activeMdiChild()->copy();
+        activeMdiChild()->commitImageChanges();
+    }
 }
 
 void MainWindow::paste()
 {
-//    if (activeMdiChild())
-//        activeMdiChild()->paste();
+    if (activeMdiChild())
+    {
+        activeMdiChild()->paste();
+        activeMdiChild()->commitImageChanges();
+    }
 }
 #endif
 
