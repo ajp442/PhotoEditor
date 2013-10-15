@@ -82,6 +82,7 @@ public:
     bool isModified();
     void setZoomable(bool canZoom = true);
     bool isZoomable();
+    bool isAreaSelected();
 
 
     //Image Effects
@@ -139,14 +140,13 @@ private:
 
     //Copy/Paste
     QClipboard* clipBoard;
-    bool copyAllowed;
+    bool areaSelected;
 
     QString curFile;
     bool isUntitled;
     bool modified;
 
     bool zoomable;
-    bool cropping;
 
     Image image;
     QGraphicsPixmapItem *pixmap;

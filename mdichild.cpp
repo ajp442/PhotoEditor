@@ -287,6 +287,11 @@ bool MdiChild::isZoomable()
     return zoomable;
 }
 
+bool MdiChild::isAreaSelected()
+{
+    return areaSelected;
+}
+
 //-----------------------------------------------------------------------------
 //                   Image Effects
 //-----------------------------------------------------------------------------
@@ -448,7 +453,7 @@ void MdiChild::redo()
 
 void MdiChild::copy()
 {
-    if(copyAllowed){
+    if(areaSelected){
         QImage copyImage = image.copy(QRect(origin, endPoint)).toImage();
         clipBoard->setImage(copyImage);
     }
@@ -470,7 +475,7 @@ void MdiChild::paste()
 
 void MdiChild::crop()
 {
-    if(cropping)
+    if(areaSelected)
     {
         image.convertFromImage(image.copy(QRect(origin, endPoint)).toImage());
         pixmap->setPixmap(image);
@@ -524,7 +529,7 @@ void MdiChild::wheelEvent(QWheelEvent* event) {
 void MdiChild::mousePressEvent(QMouseEvent *event)
 {
     rubberBand->hide();
-    copyAllowed = false;
+    areaSelected = false;
     cropping = false;
 
     origin = event->pos();
@@ -543,7 +548,7 @@ void MdiChild::mouseMoveEvent(QMouseEvent *event)
     endPoint = event->pos();
     rubberBand->setGeometry(QRect(origin, endPoint));
 
-    copyAllowed = true;
+    areaSelected = true;
     cropping = true;
 
     QGraphicsView::mouseMoveEvent(event);
