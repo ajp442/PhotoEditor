@@ -530,7 +530,6 @@ void MdiChild::mousePressEvent(QMouseEvent *event)
 {
     rubberBand->hide();
     areaSelected = false;
-    cropping = false;
 
     origin = event->pos();
     rubberBand->setGeometry(QRect(origin, QSize()));
@@ -549,7 +548,6 @@ void MdiChild::mouseMoveEvent(QMouseEvent *event)
     rubberBand->setGeometry(QRect(origin, endPoint));
 
     areaSelected = true;
-    cropping = true;
 
     QGraphicsView::mouseMoveEvent(event);
 }
