@@ -292,6 +292,12 @@ bool MdiChild::isAreaSelected()
     return areaSelected;
 }
 
+void MdiChild::setAreaSelected(bool value)
+{
+    areaSelected = value;
+    emit areaSelectedChanged();
+}
+
 //-----------------------------------------------------------------------------
 //                   Image Effects
 //-----------------------------------------------------------------------------
@@ -529,7 +535,7 @@ void MdiChild::wheelEvent(QWheelEvent* event) {
 void MdiChild::mousePressEvent(QMouseEvent *event)
 {
     rubberBand->hide();
-    areaSelected = false;
+    setAreaSelected(false);
 
     origin = event->pos();
     rubberBand->setGeometry(QRect(origin, QSize()));
@@ -547,7 +553,7 @@ void MdiChild::mouseMoveEvent(QMouseEvent *event)
     endPoint = event->pos();
     rubberBand->setGeometry(QRect(origin, endPoint));
 
-    areaSelected = true;
+    setAreaSelected(true);
 
     QGraphicsView::mouseMoveEvent(event);
 }

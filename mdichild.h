@@ -120,6 +120,7 @@ protected:
 
 signals:
     void zoomChanged();
+    void areaSelectedChanged();
 
 private:
     bool maybeSave();
@@ -152,6 +153,8 @@ private:
     QGraphicsPixmapItem *pixmap;
     std::deque<QImage> *undoStack;
     std::deque<QImage> *redoStack;
+
+    void setAreaSelected(bool value);
 };
 
 #endif
