@@ -378,7 +378,7 @@ void MainWindow::createActions()
 
 
     //================Image Actions================
-    cropAct = new QAction(tr("Crop"), this);
+    cropAct = new QAction(QIcon(":/images/crop.png"), tr("&Crop"), this);
     cropAct->setStatusTip(tr("not color"));
     connect(cropAct, SIGNAL(triggered()), this, SLOT(crop()));
 
@@ -522,6 +522,7 @@ void MainWindow::createToolBars()
     editToolBar->addAction(cutAct);
     editToolBar->addAction(copyAct);
     editToolBar->addAction(pasteAct);
+    editToolBar->addAction(cropAct);
 #endif
 }
 

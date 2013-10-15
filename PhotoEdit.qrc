@@ -6,5 +6,8 @@
         <file>images/open.png</file>
         <file>images/paste.png</file>
         <file>images/save.png</file>
+        <file>images/crop.png</file>
+        <file>images/redo.png</file>
+        <file>images/undo.png</file>
     </qresource>
 </RCC>
