@@ -468,6 +468,19 @@ void MdiChild::paste()
     }
 }
 
+void MdiChild::crop()
+{
+    if(cropping)
+    {
+        image.convertFromImage(image.copy(QRect(origin, endPoint)).toImage());
+        pixmap->setPixmap(image);
+        scene()->setSceneRect(pixmap->boundingRect());
+        setModified();
+    }
+
+    rubberBand->hide();
+}
+
 
 //-----------------------------------------------------------------------------
 //                   Re-implemented Functions
@@ -512,6 +525,7 @@ void MdiChild::mousePressEvent(QMouseEvent *event)
 {
     rubberBand->hide();
     copyAllowed = false;
+    cropping = false;
 
     origin = event->pos();
     rubberBand->setGeometry(QRect(origin, QSize()));
@@ -530,6 +544,7 @@ void MdiChild::mouseMoveEvent(QMouseEvent *event)
     rubberBand->setGeometry(QRect(origin, endPoint));
 
     copyAllowed = true;
+    cropping = true;
 
     QGraphicsView::mouseMoveEvent(event);
 }

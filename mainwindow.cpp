@@ -465,6 +465,7 @@ void MainWindow::createMenus()
     editMenu->addAction(cutAct);
     editMenu->addAction(copyAct);
     editMenu->addAction(pasteAct);
+    editMenu->addAction(cropAct);
 #endif
 
     editMenu->addAction(undoAct);
@@ -694,6 +695,7 @@ void MainWindow::paste()
         activeMdiChild()->commitImageChanges();
     }
 }
+
 #endif
 
 
@@ -723,7 +725,11 @@ void MainWindow::redo()
 //------------------------------------------------------------------------------
 void MainWindow::crop()
 {
-
+    if(activeMdiChild())
+    {
+        activeMdiChild()->crop();
+        activeMdiChild()->commitImageChanges();
+    }
 }
 
 void MainWindow::imgResize()

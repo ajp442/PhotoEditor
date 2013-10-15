@@ -100,6 +100,7 @@ public:
 
     void copy();
     void paste();
+    void crop();
 
     //void balance(int brightness, int contrastLower, int contrastUpper, double gamma);
 
@@ -145,6 +146,7 @@ private:
     bool modified;
 
     bool zoomable;
+    bool cropping;
 
     Image image;
     QGraphicsPixmapItem *pixmap;
