@@ -142,6 +142,7 @@ private:
     //Copy/Paste
     QClipboard* clipBoard;
     bool areaSelected;
+    bool pasteRepositioning;
 
     QString curFile;
     bool isUntitled;
@@ -151,6 +152,7 @@ private:
 
     Image image;
     QGraphicsPixmapItem *pixmap;
+    QGraphicsPixmapItem *pasteItem;
     std::deque<QImage> *undoStack;
     std::deque<QImage> *redoStack;
 

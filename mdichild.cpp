@@ -466,16 +466,18 @@ void MdiChild::copy()
     }
 
     rubberBand->hide();
+    setAreaSelected(false);
 }
 
 void MdiChild::paste()
 {
-    QImage clipImage = clipBoard->image();
+    Image clipImage = Image();
+    clipImage.convertFromImage(clipBoard->image());
+
     if(!clipImage.isNull())
     {
-        image.convertFromImage(clipImage);
-        pixmap->setPixmap(image);
-        scene()->setSceneRect(pixmap->boundingRect());
+        pasteItem = scene()->addPixmap(clipImage);
+        pasteItem->setFlag(QGraphicsItem::ItemIsMovable);
         setModified();
     }
 }
@@ -491,6 +493,7 @@ void MdiChild::crop()
     }
 
     rubberBand->hide();
+    setAreaSelected(false);
 }
 
 
