@@ -116,6 +116,15 @@ bool MdiChild::loadFile(const QString &fileName)
         setCurrentFile(fileName);
         return true;
     }
+    else
+    {
+        qDebug() << "in load";
+        bool retVal;
+        retVal = image.load(currentFile());
+        commitImageChanges();
+        qDebug() << "retval:" << retVal;
+        return retVal;
+    }
     return false;
 }
 

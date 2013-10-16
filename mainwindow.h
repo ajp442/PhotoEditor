@@ -88,15 +88,17 @@ private slots:
     void paste();
 #endif
 
-    //Undo, redo
+    //Undo, redo, revert
     void undo();
     void redo();
+    void revert();
 
     //Image
     void crop();
     void imgResize();
     void rotate(const std::vector<double> &dialogValues);
     void balance(const std::vector<double> &dialogValues);
+    void properties();
 
     //Dialogs
     void brightnessDialog();
@@ -187,9 +189,10 @@ private:
     QAction *pasteAct;
 #endif
 
-    //Undo, Redo
+    //Undo, Redo, Revert
     QAction *undoAct;
     QAction *redoAct;
+    QAction *revertAct;
 
     //Windowing
     QAction *closeAct;
@@ -207,6 +210,7 @@ private:
     QAction *imgResizeAct;
     QAction *rotateAct;
     QAction *balanceAct;
+    QAction *propertiesAct;
 
     //Effects
     QAction *grayScaleAct;

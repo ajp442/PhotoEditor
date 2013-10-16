@@ -153,6 +153,9 @@ void MainWindow::updateImageMenu()
     imageMenu->addAction(balanceAct);
     balanceAct->setEnabled(hasMdiChild);
 
+    imageMenu->addAction(propertiesAct);
+    propertiesAct->setEnabled(hasMdiChild);
+
 }
 
 /**************************************************************************//**
@@ -269,7 +272,7 @@ MdiChild *MainWindow::createMdiChild()
  *****************************************************************************/
 void MainWindow::createActions()
 {
-    //================New, Open, Save, Exit================
+    //================File================
     newAct = new QAction(QIcon(":/images/new.png"), tr("&New"), this);
     newAct->setShortcuts(QKeySequence::New);
     newAct->setStatusTip(tr("Create a new file"));
@@ -295,7 +298,7 @@ void MainWindow::createActions()
     exitAct->setStatusTip(tr("Exit the application"));
     connect(exitAct, SIGNAL(triggered()), qApp, SLOT(closeAllWindows()));
 
-
+    //================Edit================
     //================Copy, Cut, Paste================
 #ifndef QT_NO_CLIPBOARD
     cutAct = new QAction(QIcon(":/images/cut.png"), tr("Cu&t"), this);
@@ -315,7 +318,7 @@ void MainWindow::createActions()
     connect(pasteAct, SIGNAL(triggered()), this, SLOT(paste()));
 #endif
 
-    //================Undo, Redo=======================
+    //================Undo, Redo, Revert=======================
     undoAct = new QAction(tr("&Undo"), this);
     undoAct->setShortcut(QKeySequence::Undo);
     undoAct->setStatusTip(tr("Undo the last image effect on the current window"));
@@ -325,6 +328,10 @@ void MainWindow::createActions()
     redoAct->setShortcut(QKeySequence::Redo);
     redoAct->setStatusTip(tr("Redo the last command undone"));
     connect(redoAct, SIGNAL(triggered()), this, SLOT(redo()));
+
+    revertAct = new QAction(tr("Revert"), this);
+    revertAct->setStatusTip(tr("Undo all changes"));
+    connect(revertAct, SIGNAL(triggered()), this, SLOT(revert()));
 
 
     //================Windowing Actions================
@@ -393,6 +400,10 @@ void MainWindow::createActions()
     balanceAct = new QAction(tr("Balance (Not Implemented)"), this);
     balanceAct->setStatusTip(tr(""));
     connect(balanceAct, SIGNAL(triggered()), this, SLOT(balanceDialog()));
+
+    propertiesAct = new QAction(tr("Properties"), this);
+    propertiesAct->setStatusTip(tr("Find out more about the currently selected image"));
+    connect(propertiesAct, SIGNAL(triggered()), this, SLOT(properties()));
 
 
 
@@ -473,6 +484,7 @@ void MainWindow::createMenus()
     editMenu->addAction(cropAct);
 #endif
 
+    editMenu->addAction(revertAct);
     editMenu->addAction(undoAct);
     editMenu->addAction(redoAct);
 
@@ -638,7 +650,7 @@ void MainWindow::open()
 {
     QString caption = "Photo Edit - Select Image";
     QString defaultDir = QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
-    QString fileName = QFileDialog::getOpenFileName(this, caption, defaultDir, "images (*.png *.bmp *.jpg);;all (*.*)");
+    QString fileName = QFileDialog::getOpenFileName(this, caption, "", "images (*.png *.bmp *.jpg);;all (*.*)");
     if (!fileName.isEmpty()) {
         QMdiSubWindow *existing = findMdiChild(fileName);
         if (existing) {
@@ -726,6 +738,16 @@ void MainWindow::redo()
     }
 }
 
+void MainWindow::revert()
+{
+    if(activeMdiChild())
+    {
+        qDebug() << "reverting";
+        activeMdiChild()->loadFile();
+    }
+
+}
+
 //------------------------------------------------------------------------------
 //                  Image
 //------------------------------------------------------------------------------
@@ -767,6 +789,11 @@ void MainWindow::balance(const std::vector<double> &dialogValues)
         //activeMdiChild()->commitImageChanges();
         statusBar()->showMessage(tr("Image Balanced"), 2000);
     }
+}
+
+void MainWindow::properties()
+{
+
 }
 
 //------------------------------------------------------------------------------

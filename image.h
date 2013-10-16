@@ -3,6 +3,7 @@
 
 #include <QPixmap>
 #include <QDebug>
+#include <QPixmapCache>
 
 class Image :public QObject, public QPixmap
 {
