@@ -125,6 +125,7 @@ protected:
 signals:
     void zoomChanged();
     void areaSelectedChanged();
+    void undoRedoUpdated();
 
 private:
     bool maybeSave();

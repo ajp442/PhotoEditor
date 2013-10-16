@@ -106,6 +106,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
 void MainWindow::updateMenus()
 {
     connect(activeMdiChild(), SIGNAL(areaSelectedChanged()), this, SLOT(updateClipboardItems()));
+    connect(activeMdiChild(), SIGNAL(undoRedoUpdated()), this, SLOT(updateUndoRedo()));
     bool hasMdiChild = (activeMdiChild() != 0);
     saveAct->setEnabled(hasMdiChild);
     saveAsAct->setEnabled(hasMdiChild);
@@ -134,6 +135,13 @@ void MainWindow::updateClipboardItems()
     pasteAct->setEnabled(hasMdiChild && !QApplication::clipboard()->image().isNull());
     cropAct->setEnabled(hasMdiChild && activeMdiChild()->isAreaSelected());
 #endif
+}
+
+
+void MainWindow::updateUndoRedo()
+{
+    undoAct->setEnabled(activeMdiChild()->undoEnabled());
+    redoAct->setEnabled(activeMdiChild()->redoEnabled());
 }
 
 /**************************************************************************//**

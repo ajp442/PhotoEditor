@@ -460,11 +460,13 @@ void MdiChild::commitImageChanges()
     }
 
     //scene()->setSceneRect(image.rect());
+    emit undoRedoUpdated();
 }
 
 void MdiChild::revertImageChanges()
 {
     image.revert();
+    emit undoRedoUpdated();
 }
 
 void MdiChild::resetRotation()
@@ -493,20 +495,22 @@ void MdiChild::undo()
             scene()->setSceneRect(pixmap->boundingRect());
         }
     }
+    emit undoRedoUpdated();
 }
 
 void MdiChild::redo()
 {
-        qDebug() << "Entered MdiChild::redo()";
+        //qDebug() << "Entered MdiChild::redo()";
     if(!redoStack->empty())
     {
-        qDebug() << "Popping off redoStack";
+        //qDebug() << "Popping off redoStack";
         undoStack->push_front(image.toImage());
         image.convertFromImage(redoStack->front());
         image.commit();
         redoStack->pop_front();
         pixmap->setPixmap(image);
         scene()->setSceneRect(pixmap->boundingRect());
+        emit undoRedoUpdated();
     }
 }
 

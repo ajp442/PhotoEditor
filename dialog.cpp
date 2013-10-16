@@ -1,3 +1,21 @@
+/**************************************************************************//**
+ * @file
+ *
+ * @brief Creates a dialog with an OK and Cancel button.  It includes a .addChild
+ * method that addes a label/slider/spinBox.  Multiple rows may be added.  Each
+ * row only handles integers or doubles.
+ *@verbatim
+ * +-----------------------------------+
+ * |______________Title________________|
+ * |                                   |
+ * |    Label: ---|---------  [Spin]   |
+ * |    Label: --------|----  [Spin]   |
+ * |                                   |
+ * |                    [OK]  [Cancel] |
+ * +-----------------------------------+
+ *@endverbatim
+ *****************************************************************************/
+
 #include "dialog.h"
 
 /**************************************************************************//**
