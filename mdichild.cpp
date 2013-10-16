@@ -517,9 +517,14 @@ void MdiChild::redo()
 //-----------------------------------------------------------------------------
 //                   Copy / Paste
 //-----------------------------------------------------------------------------
+
+/**************************************************************************//**
+ * @brief Sets the image in the currently selected area as the clipboad image.
+ *****************************************************************************/
 void MdiChild::copy()
 {
-    if(areaSelected){
+    if(areaSelected)
+    {
         QImage copyImage = image.copy(QRect(origin - this->mapFromScene(0,0), endPoint - this->mapFromScene(0,0))).toImage();
         clipBoard->setImage(copyImage);
     }
@@ -527,11 +532,16 @@ void MdiChild::copy()
     setAreaSelected(false);
 }
 
+/**************************************************************************//**
+ * @brief Sets the image in the currently selected area as the clipboard image
+ * and replaces that area in the pixmap with white.
+ *****************************************************************************/
 void MdiChild::cut()
 {
     QRect cutRect = QRect(origin - this->mapFromScene(0,0), endPoint - this->mapFromScene(0,0));
 
-    if(areaSelected){
+    if(areaSelected)
+    {
         QImage copyImage = image.copy(cutRect).toImage();
         clipBoard->setImage(copyImage);
     }
@@ -543,6 +553,11 @@ void MdiChild::cut()
     pixmap->setPixmap(image);
 }
 
+/**************************************************************************//**
+ * @brief Starts the paste process by inserting a movable image at the top
+ * right corner of the scene. The user can now drag this around to place it
+ * where it is wanted.
+ *****************************************************************************/
 void MdiChild::paste()
 {
     if(!pasteRepositioning)
@@ -560,6 +575,11 @@ void MdiChild::paste()
     }
 }
 
+/**************************************************************************//**
+ * @brief Paints the pasteItem image onto the main pixmap and removes the
+ * item that can be moved around. Also resets the proper booleans to allow
+ * for the next selection.
+ *****************************************************************************/
 void MdiChild::finalizePaste()
 {
     QPoint pasteOrigin = pasteItem->mapToScene(0,0).toPoint();
@@ -581,6 +601,9 @@ void MdiChild::finalizePaste()
     pasteRepositioning = false;
 }
 
+/**************************************************************************//**
+ * @brief Crops the image to the size of the current selected area
+ *****************************************************************************/
 void MdiChild::crop()
 {
     if(areaSelected)
@@ -675,11 +698,14 @@ void MdiChild::mouseMoveEvent(QMouseEvent *event)
     if(!pasteRepositioning)
     {
         endPoint = event->pos();
+
+        //Drag down and right
         if(endPoint.x() > origin.x() && endPoint.y() > origin.y())
         {
             rubberBand->setGeometry(QRect(origin, endPoint));
         }
 
+        //Drag up and right
         else if(endPoint.x() > origin.x() && endPoint.y() < origin.y())
         {
             QRect newGeom = QRect();
@@ -689,6 +715,7 @@ void MdiChild::mouseMoveEvent(QMouseEvent *event)
             rubberBand->setGeometry(newGeom);
         }
 
+        //Drag up and left
         else if(endPoint.x() < origin.x() && endPoint.y() < origin.y())
         {
             QRect newGeom = QRect();
@@ -698,6 +725,7 @@ void MdiChild::mouseMoveEvent(QMouseEvent *event)
             rubberBand->setGeometry(newGeom);
         }
 
+        //Drag down and left
         else if(endPoint.x() < origin.x() && endPoint.y() > origin.y())
         {
             QRect newGeom = QRect();
@@ -761,4 +789,3 @@ void MdiChild::resizeEvent(QResizeEvent *event)
     }
     QGraphicsView::resizeEvent(event);
 }
-
