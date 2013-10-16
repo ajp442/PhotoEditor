@@ -120,6 +120,15 @@ bool MdiChild::loadFile(const QString &fileName)
         setCurrentFile(fileName);
         return true;
     }
+    else
+    {
+        qDebug() << "in load";
+        bool retVal;
+        retVal = image.load(currentFile());
+        commitImageChanges();
+        qDebug() << "retval:" << retVal;
+        return retVal;
+    }
     return false;
 }
 
@@ -486,12 +495,12 @@ void MdiChild::copy()
 
 void MdiChild::paste()
 {
-    Image clipImage = Image();
-    clipImage.convertFromImage(clipBoard->image());
+    Image * clipImage = new Image();
+    clipImage->convertFromImage(clipBoard->image());
 
-    if(!clipImage.isNull())
+    if(!clipImage->isNull())
     {
-        pasteItem = scene()->addPixmap(clipImage);
+        pasteItem = scene()->addPixmap(*clipImage);
         pasteItem->setFlag(QGraphicsItem::ItemIsMovable);
         setModified();
         setPasteRepositioning(true);

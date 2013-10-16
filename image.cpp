@@ -1,9 +1,9 @@
 #include "image.h"
 #include <math.h>
 
-Image::Image()
-{
-}
+//Image::Image()
+//{
+//}
 
 /*
 QImage* Image::average(const QImage *image1, const QImage *image2, const QImage *image3)
@@ -38,7 +38,9 @@ QImage* Image::average(const QImage *image1, const QImage *image2, const QImage 
 */
 bool Image::load( const QString & fileName, const char * format, Qt::ImageConversionFlags flags )
 {
+    QPixmapCache::clear();
     bool returnValue =QPixmap::load(fileName, format, flags);
+    if(NULL == unModifiedImage){ delete unModifiedImage; }
     unModifiedImage = new QImage(this->toImage());
     return returnValue;
 }
@@ -293,7 +295,7 @@ void Image::edge(QImage *image)
             // pseudo-Prewitt edge magnitude
             int Gx = qGray( temp->pixel( x, y + 1 ) ) - qGray( temp->pixel( x, y - 1 ) );
             int Gy = qGray( temp->pixel( x + 1, y ) ) - qGray( temp->pixel( x - 1, y ) );
-            int e = 3 * sqrt( Gx * Gx + Gy * Gy );
+            int e = 3 * sqrt( double(Gx * Gx + Gy * Gy) );
             if ( e > 255 ) e = 255;
             image->setPixel( x, y, qRgb( e, e, e ) );
         }
@@ -523,6 +525,7 @@ void Image::balance(int brightness, int contrastLower, int contrastUpper, double
 
 void Image::commit()
 {
+    delete unModifiedImage;
     unModifiedImage = new QImage(this->toImage());
 }
 

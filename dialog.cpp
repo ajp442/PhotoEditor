@@ -20,7 +20,7 @@ dialog::dialog(QString title)
     connect(container, SIGNAL(rejected()), this, SIGNAL(cancelled()));
 
     //When OK is pressed, close the dialog and emit accepted()
-    QObject::connect(okButton, SIGNAL(clicked()), container, SLOT(close()));
+    QObject::connect(okButton, SIGNAL(clicked()), container, SLOT(accept()));
     connect(okButton, SIGNAL(clicked()), this, SIGNAL(accepted()));
 
     //Add the buttons with a right alignment
