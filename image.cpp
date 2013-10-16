@@ -1,65 +1,57 @@
 #include "image.h"
-#include <math.h>
 
-//Image::Image()
-//{
-//}
-
-/*
-QImage* Image::average(const QImage *image1, const QImage *image2, const QImage *image3)
+Image::Image()
 {
-    if(image1 == NULL || image2 == NULL || image3 == NULL || image1->isNull() || image2->isNull() || image3->isNull())
-    {
-        qDebug() << "Image::average -> Null reference";
-        return NULL;
-    }
-
-    if(image1->width() != image2->width() != image3->width() ||
-       image1->height() != image2->height() != image3->height())
-    {
-        qDebug() << "Image::average -> Image sizes don't match";
-        //return NULL;
-    }
-
-    QImage *image = new QImage(*image1);
-    for(int x = 0; x < image1->width(); x++)
-        for(int y = 0; y < image1->height(); y++)
-        {
-            QRgb pixel1 = image1->pixel(x, y);
-            QRgb pixel2 = image2->pixel(x, y);
-            QRgb pixel3 = image3->pixel(x, y);
-            int redAvg = (qRed(pixel1) + qRed(pixel2) + qRed(pixel3)) / 3.0;
-            int greenAvg = (qGreen(pixel1) + qGreen(pixel2) + qGreen(pixel3)) / 3.0;
-            int blueAvg = (qBlue(pixel1) + qBlue(pixel2) + qBlue(pixel3)) / 3.0;
-            image->setPixel(x, y, qRgb(redAvg, greenAvg, blueAvg));
-        }
-    return image;
+    unModifiedImage = NULL;
 }
-*/
+
+/**************************************************************************//**
+ * @brief Loads in a pixmap from a given filename.  The pixmap cache is cleared
+ * everytime prior to a file load.  (This forces a similar filename to load
+ * from disk, rather than use a stored cached pixmap.  This is used because the
+ * way the revert() is handled)
+ *
+ * @param[in] fileName - Name of the file.
+ * @param[in] format - Format to load the pixmap as
+ * @param[in] flags - Special flags for converting pixmaps
+ *****************************************************************************/
 bool Image::load( const QString & fileName, const char * format, Qt::ImageConversionFlags flags )
 {
+    //Reset the pixmapCache before loading a file
+    //Whenever a file is loaded into a QPixmap, the filepath, and modified date are used as
+    //a key to the pixmap.  If the file is loaded again, it just uses the cached pixmap
+    //In our case, we don't want to load the saved pixmap, we want to reset the pixmap each
+    //time (used to revert)
     QPixmapCache::clear();
+
     bool returnValue =QPixmap::load(fileName, format, flags);
+
+    //Delete our object before setting to a new object
     if(NULL == unModifiedImage){ delete unModifiedImage; }
+
+    //Store the original image (until a commit() occurs)
     unModifiedImage = new QImage(this->toImage());
+
     return returnValue;
 }
 
-//WORKS
-void Image::grayscale(QImage *image)
+/**************************************************************************//**
+ * @brief Converts the unModifiedImage to a gray image using 30% red 59% green
+ * and 11% blue.  The image is then saved as the current object.
+ *****************************************************************************/
+void Image::grayscale()
 {
-    if(image == NULL)
-    {
-        image = new QImage(*unModifiedImage);
-    }
+    QImage *image = new QImage(*unModifiedImage);
 
     if(image->isNull())
     {
         qDebug() << "Image::grayscale -> Null reference";
         return;
     }
+
     int gray = 0;
     int nrows = image->width(), ncols = image->height();
+
     for( int r=0; r < nrows; r++)
         for( int c = 0; c < ncols; c++)
         {
@@ -73,23 +65,19 @@ void Image::grayscale(QImage *image)
             QRgb rgbValue = qRgb(gray, gray, gray);
             image->setPixel(r,c, rgbValue);
         }
+
+    //Set the current instance equal to the grayscale image
     this->convertFromImage(*image);
 }
 
-//WORKS
-void Image::sharpen(QImage *image)
+/**************************************************************************//**
+ * @brief Converts the unModifiedImage to a sharpened image.  The result is
+ * stored into the current object.
+ *****************************************************************************/
+void Image::sharpen()
 {
-    QImage *temp;//Copy of the original image
-
-    if(image == NULL)
-    {
-        image = new QImage(*unModifiedImage);
-        temp = new QImage(*unModifiedImage);
-    }
-    else
-    {
-        temp = new QImage(*image);
-    }
+    QImage *temp = new QImage(*unModifiedImage);//Copy of the original image
+    QImage *image = new QImage(*unModifiedImage);
 
     if(image->isNull() || temp->isNull())
     {
@@ -138,23 +126,21 @@ void Image::sharpen(QImage *image)
 
             image->setPixel(r, c, qRgb(red, green, blue));
         }
+
+    //Set the current instance equal to the modified image
     this->convertFromImage(*image);
 }
 
-//WORKS
-void Image::soften(QImage *image)
-{
-    QImage *temp; //Copy of original image
 
-    if(image == NULL)
-    {
-        image = new QImage(*unModifiedImage);
-        temp = new QImage(*unModifiedImage);
-    }
-    else
-    {
-        temp = new QImage(*image);
-    }
+
+/**************************************************************************//**
+ * @brief The unModifiedImage is softened and then stored as the current object
+ * instance.
+ *****************************************************************************/
+void Image::soften()
+{
+    QImage *temp = new QImage(*unModifiedImage); //Copy of original image
+    QImage *image = new QImage(*unModifiedImage);
 
     if(image->isNull() || temp->isNull())
     {
@@ -162,7 +148,9 @@ void Image::soften(QImage *image)
         return;
     }
 
-    //Weiss's code
+    //Author: John M. Weiss, Ph.D.
+    //Class:  CSC421/521 GUI-OOP, Fall 2013.
+    //Posted September 23, 2013.
     for ( int x = 1; x < image->width() - 1; x++ )
     {
         for ( int y = 1; y < image->height() - 1; y++ )
@@ -182,16 +170,17 @@ void Image::soften(QImage *image)
         }
     }
 
+    //Sets the current instance equal to the modified image
     this->convertFromImage(*image);
 }
 
-//WORKS
-void Image::negative(QImage *image)
+/**************************************************************************//**
+ * @brief The unModifiedImage is negated and then stored as the current object
+ * instance.
+ *****************************************************************************/
+void Image::negative()
 {
-    if(image == NULL)
-    {
-        image = new QImage(*unModifiedImage);
-    }
+    QImage *image = new QImage(*unModifiedImage);
 
     if(image->isNull())
     {
@@ -199,87 +188,37 @@ void Image::negative(QImage *image)
         return;
     }
 
+    //Negate the image
     image->invertPixels();
+
+    //Set the current instance to the negated image
     this->convertFromImage(*image);
 }
 
-//Does not work
-void Image::despeckle(int threshold = 32, QImage *image)
+/**************************************************************************//**
+ * @brief The following function is a placeholder.  It is not implemented.
+ *****************************************************************************/
+void Image::despeckle(int threshold = 32)
 {
-    QImage *temp; //Copy of original image
-
-    if(image == NULL)
-    {
-        image = new QImage(*unModifiedImage);
-        temp = new QImage(*unModifiedImage);
-    }
-    else
-    {
-        temp = new QImage(*image);
-    }
-
-    if(image->isNull() || temp->isNull())
-    {
-        qDebug() << "Image::despeckle -> Null reference";
-        return;
-    }
-
-    //For every pixel in the image, change the value of the pixel
-    //if it's out of range of the threshold
-    for (int r = 1; r < image->width() - 1; r++)
-        for(int c = 1; c < image->height() - 1; c++)
-        {
-            //remove the middle pixel from the average
-            int blueSum = -qBlue(temp->pixel(r, c));
-            int greenSum = -qGreen(temp->pixel(r, c));
-            int redSum = -qRed(temp->pixel(r, c));
-
-            //Add all 9 pixels to the sum
-            //The middle pixel was already subtracted, so it will add
-            //zero to the sum overall
-            for(int i = -1; i <= 1; i++)
-                for(int j = -1; j <= 1; j++)
-                {
-                    QRgb pixel = temp->pixel(r+i, c+j);
-                    blueSum = -qBlue(pixel);
-                    greenSum = -qGreen(pixel);
-                    redSum = -qRed(pixel);
-                }
-
-            //Calculate the average (8 total pixels)
-            double blueAvg = blueSum/8.0;
-            double greenAvg = greenSum/8.0;
-            double redAvg = redSum/8.0;
-
-            double avg = blueAvg * 0.11 + redAvg * 0.30 + greenAvg * 0.59;
-
-            //If the difference between the center pixel and the
-            //average is greater than than the threshold, replace
-            //the middle pixel with the average of the other 8 pixels
-            if(abs(qGray(temp->pixel(r, c)) - avg) > threshold)
-                image->setPixel(r, c, qRgb(redAvg, greenAvg, blueAvg));
-        }
-    this->convertFromImage(*image);
+    qDebug() << "Image::despeckle -> Not Implemented";
 }
 
-void Image::posterize(QImage *image)
+/**************************************************************************//**
+ * @brief The following function is a placeholder.  It is not implemented.
+ *****************************************************************************/
+void Image::posterize()
 {
-
+    qDebug() << "Image::posterize -> Not Implemented";
 }
 
-void Image::edge(QImage *image)
+/**************************************************************************//**
+ * @brief Finds the edges of the unModifiedImage and sets the current instance
+ * as the result.
+ *****************************************************************************/
+void Image::edge()
 {
-    QImage *temp; //Copy of original image
-
-    if(image == NULL)
-    {
-        image = new QImage(*unModifiedImage);
-        temp = new QImage(*unModifiedImage);
-    }
-    else
-    {
-        temp = new QImage(*image);
-    }
+    QImage *temp = new QImage(*unModifiedImage); //Copy of original image
+    QImage *image = new QImage(*unModifiedImage);
 
     if(image->isNull() || temp->isNull())
     {
@@ -287,7 +226,9 @@ void Image::edge(QImage *image)
         return;
     }
 
-    //Weiss's code
+    //Author: John M. Weiss, Ph.D.
+    //Class:  CSC421/521 GUI-OOP, Fall 2013.
+    //Posted September 25, 2013.
     for ( int x = 1; x < temp->width() - 1; x++ )
     {
         for ( int y = 1; y < temp->height() - 1; y++ )
@@ -301,16 +242,17 @@ void Image::edge(QImage *image)
         }
     }
 
+    //Sets the current image instance to the edged image
     this->convertFromImage(*image);
 }
 
-//doesn't work
-void Image::emboss(QImage *image)
+/**************************************************************************//**
+ * @brief The unModifiedImage is embossed.  The result is stored in the current
+ * instance;
+ *****************************************************************************/
+void Image::emboss()
 {
-    if(image == NULL)
-    {
-        image = new QImage(*unModifiedImage);
-    }
+    QImage *image = new QImage(*unModifiedImage);
 
     if(image->isNull())
     {
@@ -318,6 +260,11 @@ void Image::emboss(QImage *image)
         return;
     }
 
+    // 0  0  0
+    // 0  1  0
+    // 0  0 -1
+    //Performs the above filter on all the RGB, then averages the RGB into
+    //a grayscale using 30% Red, 59% Green, 11% Blue
     for ( int x = 0; x < image->width()-1; x++ )
     {
         for ( int y = 0; y < image->height()-1; y++ )
@@ -333,17 +280,24 @@ void Image::emboss(QImage *image)
         }
     }
 
+    //Set the current instance to the embossed image
     this->convertFromImage(*image);
 }
 
-//WORKS
-void Image::gamma(double gammaValue, QImage *image)
+/**************************************************************************//**
+ * @brief Performs the gamma function to the image.
+ *
+ *          (R/255)^(gamma) * 255 + 0.5
+ *          (G/255)^(gamma) * 255 + 0.5
+ *          (B/255)^(gamma) * 255 + 0.5
+ *
+ *  0.5 is rounding
+ *
+ * @param[in] gammaValue - Power to raise to
+ *****************************************************************************/
+void Image::gamma(double gammaValue)
 {
-
-    if(image == NULL)
-    {
-        image = new QImage(*unModifiedImage);
-    }
+    QImage *image = new QImage(*unModifiedImage);
 
     if(image->isNull())
     {
@@ -351,6 +305,7 @@ void Image::gamma(double gammaValue, QImage *image)
         return;
     }
 
+    //Gamma of the image (as stated by function header)
     for ( int x = 0; x < image->width(); x++ )
     {
         for ( int y = 0; y < image->height(); y++ )
@@ -363,17 +318,19 @@ void Image::gamma(double gammaValue, QImage *image)
         }
     }
 
+    //Sets the current instance to the gamma image
     this->convertFromImage(*image);
 }
 
 
-//WORKS
-void Image::brightness(int brightnessLevel, QImage *image)
+/**************************************************************************//**
+ * @brief Brightens (or darkens) based on the brightnessLevel
+ *
+ * @param[in] brightnessLevel - Number of pixels to add to each pixel
+ *****************************************************************************/
+void Image::brightness(int brightnessLevel)
 {
-    if(image == NULL)
-    {
-        image = new QImage(*unModifiedImage);
-    }
+    QImage *image = new QImage(*unModifiedImage);
 
     if(image->isNull())
     {
@@ -384,6 +341,7 @@ void Image::brightness(int brightnessLevel, QImage *image)
     int nrows = image->width(), ncols = image->height(), r, c,
     lut[256];
 
+    //Create a Look up table for brightnesses
     for(int i = 0; i < 256; i++ )
     {
         if( (i + brightnessLevel) > 255 )
@@ -394,6 +352,7 @@ void Image::brightness(int brightnessLevel, QImage *image)
             lut[i] = i + brightnessLevel;
     }
 
+    //Set the RGB values based on the look up table
     for( r = 0; r < nrows; r++ )
         for( c = 0; c < ncols; c++ )
         {
@@ -404,17 +363,20 @@ void Image::brightness(int brightnessLevel, QImage *image)
             image->setPixel(r, c, qRgb(red, green, blue));
         }
 
+    //Sets the current instance to the brightened image
     this->convertFromImage(*image);
 }
 
 
-//WORKS
-void Image::binaryThreshold(int threshold, QImage *image)
+/**************************************************************************//**
+ * @brief Sets pixels black or white.  If the pixel is less than the threshold,
+ * the pixel is set black, otherwise it's set white.
+ *
+ * @param[in] threshold - The intensity level to check against
+ *****************************************************************************/
+void Image::binaryThreshold(int threshold)
 {
-    if(image == NULL)
-    {
-        image = new QImage(*unModifiedImage);
-    }
+    QImage *image = new QImage(*unModifiedImage);
 
     if(image->isNull())
     {
@@ -422,6 +384,7 @@ void Image::binaryThreshold(int threshold, QImage *image)
         return;
     }
 
+    //Avoid corrupted input
     if(threshold < 0 || threshold > 255)
     {
         qDebug() << "Image::binaryThreshold -> Invalid parameter, expecting a value [0,255] instead got " << threshold;
@@ -429,13 +392,12 @@ void Image::binaryThreshold(int threshold, QImage *image)
 
     int lut[256] = {0};
 
+    //Create a simple lookup table
     for( int i = threshold; i < 256; i++ )
         lut[i] = 255;
 
-    //Initialize image to grayscale to facilitate
-    // binary threshold operation
-    //Menu_Palette_Grayscale( image );
-
+    //Compair 30% Red 59% Green, 11% Blue value against the threshold
+    //Set the value based on the lookup table
     for( int r=0; r < image->width(); r++)
         for( int c = 0; c < image->height(); c++)
         {
@@ -446,16 +408,22 @@ void Image::binaryThreshold(int threshold, QImage *image)
             image->setPixel(r, c, qRgb( pixelValue, pixelValue, pixelValue));
         }
 
+    //Set the current instance to the binary threshold image
     this->convertFromImage(*image);
 }
 
-//Works okay-ish
-void Image::contrast(int lower, int upper, QImage *image)
+/**************************************************************************//**
+ * @brief Contrasts the image.  This function works semi-well.  It individually
+ * changes the RGB values, which it should change the intensity, but it gets
+ * the point across.  The contrast is changed by specifying a lower and upper
+ * bound.  The image then maps the pixels to values within that range.
+ *
+ * @param[in] lower - Lowerbound of the intensity
+ * @param[in] upper - Upperbound of the intensity
+ *****************************************************************************/
+void Image::contrast(int lower, int upper)
 {
-    if(image == NULL)
-    {
-        image = new QImage(*unModifiedImage);
-    }
+    QImage *image = new QImage(*unModifiedImage);
 
     if(image->isNull())
     {
@@ -463,9 +431,9 @@ void Image::contrast(int lower, int upper, QImage *image)
         return;
     }
 
-    if(lower == upper)
+    if(lower >= upper)
     {
-        qDebug() << "Image::contrast -> lower == upper, aborting to prevent divide by 0";
+        qDebug() << "Image::contrast -> lower >= upper, aborting to prevent divide by 0";
         return;
     }
 
@@ -475,60 +443,70 @@ void Image::contrast(int lower, int upper, QImage *image)
                QRgb pixel = image->pixel(r, c);
                int red = qRed(pixel), green = qGreen(pixel), blue = qBlue(pixel);
 
+               //Perform the contrast operation/formula
                red = (red - lower) * 256.0 / (upper - lower) + 0.5;
                green = (green - lower) * 256.0 / (upper - lower) + 0.5;
                blue = (blue - lower) * 256.0 / (upper - lower) + 0.5;
 
+               //Handle values < 0 or > 255
                red = (red < lower) ? 0 : (red > upper) ? 255 : red;
                green = (green < lower) ? 0 : (green > upper) ? 255 : green;
                blue = (blue < lower) ? 0 : (blue > upper) ? 255 : blue;
+
                image->setPixel(r, c, qRgb(red, green, blue));
            }
 
-
+    //Set the current instance to the contrasted image
     this->convertFromImage(*image);
 }
-/*
+
+
+/**************************************************************************//**
+ * @brief The following function is a placeholder.  It is not implemented.
+ *****************************************************************************/
 void Image::balance(int brightness, int contrastLower, int contrastUpper, double gamma)
 {
-    static int oldBrightness = -999;
-    static int oldContrastLower = -999;
-    static int oldContrastUpper = -999;
-    static double oldGamma = -999;
-    static QImage *brightImage = new QImage(*unModifiedImage);
-    static QImage *contrastImage = new QImage(*unModifiedImage);
-    static QImage *gammaImage = new QImage(*unModifiedImage);
+    qDebug() << "Image::balance -> Not Implemented";
+}
 
-    if(brightness != oldBrightness)
+
+/**************************************************************************//**
+ * @brief Resizes the image to the desired width and height (in pixels)
+ *
+ * @param[in] width - Number of pixels wide
+ * @param[in] height - Number of pixels tall
+ *****************************************************************************/
+void Image::imgResize(int width, int height)
+{
+    QImage *image = new QImage(*unModifiedImage);
+
+    if(image->isNull())
     {
-        oldBrightness = brightness;
-        this->brightness(brightness, brightImage);
+        qDebug() << "Image::imgResize -> Null reference";
+        return;
     }
 
-    if(contrastLower != oldContrastLower || contrastUpper != oldContrastUpper)
-    {
-        oldContrastLower = contrastLower;
-        oldContrastUpper = contrastUpper;
-        //this->contrast(contrastLower, contrastUpper, contrastImage);
-    }
-
-    if(oldGamma != gamma)
-    {
-        oldGamma = gamma;
-        this->gamma(gamma, gammaImage);
-    }
-
-    QImage *image = Image::average(brightImage, contrastImage, gammaImage);
+    //Set the current instance to the resized image
+    image = new QImage(image->scaled(width, height));
     this->convertFromImage(*image);
 }
-*/
 
+
+/**************************************************************************//**
+ * @brief Simple slot to save the current image as a backlog. (When OK is
+ * pressed.)
+ *****************************************************************************/
 void Image::commit()
 {
-    delete unModifiedImage;
+    if (NULL != unModifiedImage)
+        delete unModifiedImage;
     unModifiedImage = new QImage(this->toImage());
 }
 
+
+/**************************************************************************//**
+ * @brief Used to undo a recent change (when Cancel is pressed)
+ *****************************************************************************/
 void Image::revert()
 {
     this->convertFromImage(*unModifiedImage);

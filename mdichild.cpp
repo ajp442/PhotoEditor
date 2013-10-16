@@ -89,6 +89,19 @@ void MdiChild::newFile()
 
     isUntitled = true;
     curFile = tr("img%1.png").arg(sequenceNumber++);
+    QImage temp(200, 200, QImage::Format_RGB32);
+    image.convertFromImage(temp);
+    image.fill(QColor(255, 255, 255, 255));
+
+    commitImageChanges();
+
+    QGraphicsScene *scene = new QGraphicsScene;
+    scene->setBackgroundBrush(QBrush(QColor(0,0,0,48)));
+    pixmap = scene->addPixmap(image);
+    this->setScene(scene);
+
+    setCurrentFile(curFile);
+
     setWindowTitle(curFile + "[*]");
     setModified();
 }
@@ -126,6 +139,7 @@ bool MdiChild::loadFile(const QString &fileName)
         bool retVal;
         retVal = image.load(currentFile());
         commitImageChanges();
+        pixmap->setPixmap(image);
         qDebug() << "retval:" << retVal;
         return retVal;
     }
@@ -423,6 +437,16 @@ void MdiChild::balance(int brightness, int contrastLower, int contrastUpper, dou
     setModified();
 }
 */
+
+void MdiChild::imgResize(int width, int height)
+{
+    image.imgResize(width, height);
+    //image.convertFromImage(image.scaled(width, height).toImage());
+    pixmap->setPixmap(image);
+    scene()->setSceneRect(pixmap->boundingRect());
+    setModified();
+}
+
 void MdiChild::commitImageChanges()
 {
     image.commit();
@@ -489,7 +513,6 @@ void MdiChild::redo()
 //-----------------------------------------------------------------------------
 //                   Copy / Paste
 //-----------------------------------------------------------------------------
-
 void MdiChild::copy()
 {
     if(areaSelected){

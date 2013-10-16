@@ -98,6 +98,7 @@ public:
     void brightness(int brightnessLevel);
     void binaryThreshold(int threshold);
     void contrast(int lower, int upper);
+    void imgResize(int width, int height);
 
     void copy();
     void cut();

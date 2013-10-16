@@ -1,5 +1,12 @@
 #include "dialog.h"
 
+/**************************************************************************//**
+ * @brief Constructor for Dialog class.  Creates two gridLayouts, one for the
+ * buttons, the other for the main body.  The main body is built as addChild()
+ * is called.
+ *
+ * @param[in] title - The name of the modal popup window
+ *****************************************************************************/
 dialog::dialog(QString title)
 {
     //Initialize private members
@@ -49,6 +56,16 @@ dialog::dialog(QString title)
     container->show();
 }
 
+
+/**************************************************************************//**
+ * @brief Creates a row in the dialog containing a label, slider, and spinBox
+ * based on double values.
+ *
+ * @param[in] label - Name of the label on the row
+ * @param[in] baseValue - Initial value to start the slider/spinBox at
+ * @param[in] min - Minimum value of the slider/spinBox
+ * @param[in] max - Maximum value of the slider/spinBox
+ *****************************************************************************/
 void dialog::addChild(QString label, double baseValue, double min, double max)
 {
     //Create a label, horizontal slider, and spinBox
@@ -81,84 +98,126 @@ void dialog::addChild(QString label, double baseValue, double min, double max)
     signalMapper->setMapping(childSpinBox, childSpinBox);
     QObject::connect(signalMapper, SIGNAL(mapped(QWidget*)), this, SLOT(returnWidget(QWidget*)));
 
-    currentValues.push_back(baseValue);
+    //Add the label, slider, and spinBox the the dialog's layout
     bodyLayout->addWidget(childLabel, _row, 0);
     bodyLayout->addWidget(childSlider, _row, 1);
     bodyLayout->addWidget(childSpinBox, _row, 2);
     _row++;
+
+    //Add the initial value to the private vector member
+    currentValues.push_back(baseValue);
 }
 
+
+/**************************************************************************//**
+ * @brief Creates a row in the dialog containing a left label, a slider, and a
+ * spinBox based on integers.
+ *
+ * @param[in] label - Name of the label on the row
+ * @param[in] baseValue - Initial value to start the slider/spinBox at
+ * @param[in] min - Minimum value of the slider/spinBox
+ * @param[in] max - Maximum value of the slider/spinBox
+ *****************************************************************************/
 void dialog::addChild(QString label, int baseValue, int min, int max)
 {
-    currentValues.push_back(baseValue);
+    //Initialize the three widgets for the row of the dialog
     QLabel * childLabel = new QLabel(label);
     QSlider * childSlider = new QSlider(Qt::Horizontal);
     QSpinBox *childSpinBox = new QSpinBox;
 
+    //Set the range of the two widgets
     childSlider->setRange(min, max);
     childSpinBox->setRange(min, max);
 
+    //Cause the slider and spinBox to update each other
     QObject::connect(childSpinBox, SIGNAL(valueChanged(int)),childSlider,SLOT(setValue(int)) );
     QObject::connect(childSlider,SIGNAL(valueChanged(int)),childSpinBox,SLOT(setValue(int)) );
 
     //must be placed after spinBox -> slider slot/signal
     childSpinBox->setValue(baseValue);
 
+    //When the spinBox changes, update the currentValues private vector member
     connect(childSpinBox, SIGNAL(valueChanged(int)), signalMapper, SLOT(map()));
     signalMapper->setMapping(childSpinBox, childSpinBox);
     QObject::connect(signalMapper, SIGNAL(mapped(QWidget*)), this, SLOT(returnWidget(QWidget*)));
 
-
+    //Add the label, slider, and spinBox to the dialog's layout
     bodyLayout->addWidget(childLabel, _row, 0);
     bodyLayout->addWidget(childSlider, _row, 1);
     bodyLayout->addWidget(childSpinBox, _row, 2);
     _row++;
+
+    //Add the initial value to the private vector member
+    currentValues.push_back(baseValue);
 }
 
+
+/**************************************************************************//**
+ * @brief A slot that contains the spinBox that was changed.  This method updates
+ * the currentValues vector based on the widget changed.
+ *
+ * @param[in] object - The spinBox of the row changed
+ *****************************************************************************/
 void dialog::returnWidget(QWidget *object)
 {
-    QDoubleSpinBox *spinster;
-    QSpinBox *spinster2;
-    spinster = qobject_cast<QDoubleSpinBox*>(object);
-    spinster2 = qobject_cast<QSpinBox*>(object);
-    if(spinster)
+    QDoubleSpinBox *doubleSpinBox = qobject_cast<QDoubleSpinBox*>(object);
+    QSpinBox *integerSpinBox = qobject_cast<QSpinBox*>(object);
+
+    //If the object was converted successfully to a QDoubleSpinBox
+    if(doubleSpinBox)
     {
         for(int currentRow = 0; currentRow < _row; currentRow++)
         {
+            //Update the currentValues based on the row it was located at
             if(object == bodyLayout->itemAtPosition(currentRow, 2)->widget())
             {
-                currentValues[currentRow] = spinster->value();
+                currentValues[currentRow] = doubleSpinBox->value();
             }
         }
     }
-    else if(spinster2)
+    else if(integerSpinBox)
     {
         for(int currentRow = 0; currentRow < _row; currentRow++)
         {
+            //Update the currentValues based on the row it was located at
             if(object == bodyLayout->itemAtPosition(currentRow, 2)->widget())
             {
-                currentValues[currentRow] = spinster2->value();
+                currentValues[currentRow] = integerSpinBox->value();
             }
         }
     }
 
-    //Uncomment this if we want to try dynamically updating the image
+    //Dynamically updates the image as the dialog changes
     emit valueChanged(currentValues);
 }
 
 
 
-
+/**************************************************************************//**
+ * @brief A simple slot that simply emits the vector of doubles signal.
+ *****************************************************************************/
 void dialog::emitValueChanged()
 {
     emit valueChanged(currentValues);
 }
 
+
+/**************************************************************************//**
+ * @brief A simple slot that emits the value changes on an integer slider.  The
+ * slider's value is 100 times the 'actual' value.  This slot converts the value
+ * down to the double for QDoubleSpinBox.
+ *****************************************************************************/
 void dialog::reemitSliderValueChanged(int value)
 {
     emit sliderValueChanged(value/100.0);
 }
 
+
+/**************************************************************************//**
+ * @brief A simple slot that emits the values changed on a QDoubleSpinBox.  The
+ * spin box's value is multiplied by 100 and passed to the slider.  (Since the
+ * slider is an integer slider.
+ *****************************************************************************/
 void dialog::reemitDoubleSpinBoxValueChanged(double value)
 {
     emit doubleSpinBoxValueChanged(value*100.0);
