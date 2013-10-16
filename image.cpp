@@ -1,6 +1,11 @@
 #include "image.h"
 #include <math.h>
 
+Image::Image()
+{
+    unModifiedImage = NULL;
+}
+
 bool Image::load( const QString & fileName, const char * format, Qt::ImageConversionFlags flags )
 {
     QPixmapCache::clear();
@@ -478,7 +483,8 @@ void Image::imgResize(int width, int height, QImage *image)
 
 void Image::commit()
 {
-    delete unModifiedImage;
+    if (NULL != unModifiedImage)
+        delete unModifiedImage;
     unModifiedImage = new QImage(this->toImage());
 }
 
