@@ -111,6 +111,7 @@ void MainWindow::updateMenus()
     saveAsAct->setEnabled(hasMdiChild);
     undoAct->setEnabled(hasMdiChild);
     redoAct->setEnabled(hasMdiChild);
+    revertAct->setEnabled(hasMdiChild);
     closeAct->setEnabled(hasMdiChild);
     closeAllAct->setEnabled(hasMdiChild);
     tileAct->setEnabled(hasMdiChild);
