@@ -105,13 +105,17 @@ void MainWindow::closeEvent(QCloseEvent *event)
  *****************************************************************************/
 void MainWindow::updateMenus()
 {
-    connect(activeMdiChild(), SIGNAL(areaSelectedChanged()), this, SLOT(updateClipboardItems()));
-    connect(activeMdiChild(), SIGNAL(undoRedoUpdated()), this, SLOT(updateUndoRedo()));
+
     bool hasMdiChild = (activeMdiChild() != 0);
+    if(hasMdiChild)
+    {
+        connect(activeMdiChild(), SIGNAL(areaSelectedChanged()), this, SLOT(updateClipboardItems()));
+        connect(activeMdiChild(), SIGNAL(undoRedoUpdated()), this, SLOT(updateUndoRedo()));
+        undoAct->setEnabled(activeMdiChild()->undoEnabled());
+        redoAct->setEnabled(activeMdiChild()->redoEnabled());
+    }
     saveAct->setEnabled(hasMdiChild);
     saveAsAct->setEnabled(hasMdiChild);
-    undoAct->setEnabled(hasMdiChild);
-    redoAct->setEnabled(hasMdiChild);
     revertAct->setEnabled(hasMdiChild);
     closeAct->setEnabled(hasMdiChild);
     closeAllAct->setEnabled(hasMdiChild);
@@ -330,15 +334,17 @@ void MainWindow::createActions()
 #endif
 
     //================Undo, Redo, Revert=======================
-    undoAct = new QAction(tr("&Undo"), this);
+    undoAct = new QAction(QIcon(":/images/undo.png"), tr("&Undo."), this);
     undoAct->setShortcut(QKeySequence::Undo);
     undoAct->setStatusTip(tr("Undo the last image effect on the current window"));
     connect(undoAct, SIGNAL(triggered()), this, SLOT(undo()));
+    undoAct->setEnabled(false);  //Initial creation
 
-    redoAct = new QAction(tr("&Redo"), this);
+    redoAct = new QAction(QIcon(":/images/redo.png"), tr("&Redo"), this);
     redoAct->setShortcut(QKeySequence::Redo);
     redoAct->setStatusTip(tr("Redo the last command undone"));
     connect(redoAct, SIGNAL(triggered()), this, SLOT(redo()));
+    redoAct->setEnabled(false); //Initial creation
 
     revertAct = new QAction(tr("Revert"), this);
     revertAct->setStatusTip(tr("Undo all changes"));
@@ -547,6 +553,8 @@ void MainWindow::createToolBars()
     editToolBar->addAction(pasteAct);
     editToolBar->addAction(cropAct);
 #endif
+    editToolBar->addAction(undoAct);
+    editToolBar->addAction(redoAct);
 }
 
 /**************************************************************************//**
