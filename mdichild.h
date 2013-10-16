@@ -147,7 +147,9 @@ private:
     bool areaSelected;
 
     bool pasteRepositioning;
+    bool pasteItemMoving;
     void setPasteRepositioning(bool value);
+    void finalizePaste();
 
     QString curFile;
     bool isUntitled;
