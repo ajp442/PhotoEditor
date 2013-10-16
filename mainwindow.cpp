@@ -48,6 +48,8 @@
 #include <QStandardPaths>
 #include <QUrl>
 #include <QTransform>
+#include <QImageReader>
+#include <QDebug>
 
 #include "mainwindow.h"
 #include "mdichild.h"
@@ -650,7 +652,7 @@ void MainWindow::open()
 {
     QString caption = "Photo Edit - Select Image";
     QString defaultDir = QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
-    QString fileName = QFileDialog::getOpenFileName(this, caption, "", "images (*.png *.bmp *.jpg);;all (*.*)");
+    QString fileName = QFileDialog::getOpenFileName(this, caption, "", "images (*.png *.bmp *.jpg);;all (*)");
     if (!fileName.isEmpty()) {
         QMdiSubWindow *existing = findMdiChild(fileName);
         if (existing) {
@@ -793,6 +795,21 @@ void MainWindow::balance(const std::vector<double> &dialogValues)
 
 void MainWindow::properties()
 {
+    if (activeMdiChild())
+    {
+        QString theProperties;
+        QImageReader reader(activeMdiChild()->currentFile());
+        qreal width = activeMdiChild()->scene()->width();
+        qreal height = activeMdiChild()->scene()->height();
+        QString fileType = QString(reader.format());
+        QString filePath = activeMdiChild()->currentFile();
+        theProperties += QString("Width: %1\n").arg(width);
+        theProperties += QString("Height: %1\n").arg(height);
+        theProperties += QString("File Type: %1\n").arg(fileType);
+        theProperties += QString("File Name: \"%1\"").arg(filePath);
+
+        QMessageBox::about(this, "Properties", theProperties);
+    }
 
 }
 

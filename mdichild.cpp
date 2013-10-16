@@ -123,6 +123,7 @@ bool MdiChild::loadFile(const QString &fileName)
         bool retVal;
         retVal = image.load(currentFile());
         commitImageChanges();
+        pixmap->setPixmap(image);
         qDebug() << "retval:" << retVal;
         return retVal;
     }
@@ -472,7 +473,6 @@ void MdiChild::redo()
 //-----------------------------------------------------------------------------
 //                   Copy / Paste
 //-----------------------------------------------------------------------------
-
 void MdiChild::copy()
 {
     if(areaSelected){
