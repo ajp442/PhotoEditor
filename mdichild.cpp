@@ -89,6 +89,19 @@ void MdiChild::newFile()
 
     isUntitled = true;
     curFile = tr("img%1.png").arg(sequenceNumber++);
+    QImage temp(200, 200, QImage::Format_RGB32);
+    image.convertFromImage(temp);
+    image.fill(QColor(255, 255, 255, 255));
+
+    commitImageChanges();
+
+    QGraphicsScene *scene = new QGraphicsScene;
+    scene->setBackgroundBrush(QBrush(QColor(0,0,0,48)));
+    pixmap = scene->addPixmap(image);
+    this->setScene(scene);
+
+    setCurrentFile(curFile);
+
     setWindowTitle(curFile + "[*]");
     setModified();
 }

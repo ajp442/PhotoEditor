@@ -1,5 +1,9 @@
 #include "image.h"
 
+Image::Image()
+{
+    unModifiedImage = NULL;
+}
 
 /**************************************************************************//**
  * @brief Loads in a pixmap from a given filename.  The pixmap cache is cleared
@@ -494,7 +498,8 @@ void Image::imgResize(int width, int height)
  *****************************************************************************/
 void Image::commit()
 {
-    delete unModifiedImage;
+    if (NULL != unModifiedImage)
+        delete unModifiedImage;
     unModifiedImage = new QImage(this->toImage());
 }
 
