@@ -30,6 +30,7 @@ public:
     void brightness(int brightnessLevel, QImage *image = NULL);
     void binaryThreshold(int threshold, QImage *image = NULL);
     void contrast(int lower, int upper, QImage *image = NULL);
+    void imgResize(int width, int height, QImage *image = NULL);
     //void balance(int brightness, int contrastLower, int contrastUpper, double gamma);
 signals:
     void finished();

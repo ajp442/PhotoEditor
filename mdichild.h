@@ -98,6 +98,7 @@ public:
     void brightness(int brightnessLevel);
     void binaryThreshold(int threshold);
     void contrast(int lower, int upper);
+    void imgResize(int width, int height);
 
     void copy();
     void paste();
@@ -146,7 +147,9 @@ private:
     bool areaSelected;
 
     bool pasteRepositioning;
+    bool pasteItemMoving;
     void setPasteRepositioning(bool value);
+    void finalizePaste();
 
     QString curFile;
     bool isUntitled;

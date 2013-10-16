@@ -60,6 +60,9 @@ MdiChild::MdiChild()
     zoomable = true;
     areaSelected = false;
 
+    pasteItemMoving = false;
+    pasteRepositioning = false;
+
     rubberBand = new QRubberBand(QRubberBand::Rectangle, this);
     clipBoard = QApplication::clipboard();
 
@@ -307,12 +310,19 @@ bool MdiChild::isAreaSelected()
 void MdiChild::setAreaSelected(bool value)
 {
     areaSelected = value;
+
+    if(!areaSelected)
+        rubberBand->hide();
+
     emit areaSelectedChanged();
 }
 
 void MdiChild::setPasteRepositioning(bool value)
 {
     pasteRepositioning = value;
+
+    if(!pasteRepositioning)
+        finalizePaste();
 }
 
 //-----------------------------------------------------------------------------
@@ -414,6 +424,16 @@ void MdiChild::balance(int brightness, int contrastLower, int contrastUpper, dou
     setModified();
 }
 */
+
+void MdiChild::imgResize(int width, int height)
+{
+    image.imgResize(width, height);
+    //image.convertFromImage(image.scaled(width, height).toImage());
+    pixmap->setPixmap(image);
+    scene()->setSceneRect(pixmap->boundingRect());
+    setModified();
+}
+
 void MdiChild::commitImageChanges()
 {
     image.commit();
@@ -476,11 +496,10 @@ void MdiChild::redo()
 void MdiChild::copy()
 {
     if(areaSelected){
-        QImage copyImage = image.copy(QRect((origin - pixmap->scenePos()).toPoint(), (endPoint - pixmap->scenePos()).toPoint())).toImage();
+        QImage copyImage = image.copy(QRect(origin - this->mapFromScene(0,0), endPoint - this->mapFromScene(0,0))).toImage();
         clipBoard->setImage(copyImage);
     }
 
-    rubberBand->hide();
     setAreaSelected(false);
 }
 
@@ -498,6 +517,25 @@ void MdiChild::paste()
     }
 }
 
+void MdiChild::finalizePaste()
+{
+    QPoint pasteOrigin = pasteItem->mapToScene(0,0).toPoint();
+    QSize pasteSize = pasteItem->boundingRect().size().toSize();
+
+    QRect pasteRect = QRect(pasteOrigin, pasteSize);
+
+    QPainter painter(&image);
+
+    painter.drawTiledPixmap(pasteRect, pasteItem->pixmap(), QPoint(0,0));
+
+    scene()->removeItem(pasteItem);
+
+    pixmap->setPixmap(image);
+
+    pasteItemMoving = false;
+    pasteRepositioning = false;
+}
+
 void MdiChild::crop()
 {
     if(areaSelected)
@@ -508,7 +546,6 @@ void MdiChild::crop()
         setModified();
     }
 
-    rubberBand->hide();
     setAreaSelected(false);
 }
 
@@ -571,12 +608,15 @@ void MdiChild::wheelEvent(QWheelEvent* event) {
  *****************************************************************************/
 void MdiChild::mousePressEvent(QMouseEvent *event)
 {
-    rubberBand->hide();
-    setAreaSelected(false);
+    if(!pasteRepositioning)
+    {
+        rubberBand->hide();
+        setAreaSelected(false);
 
-    origin = event->pos();
-    rubberBand->setGeometry(QRect(origin, QSize()));
-    rubberBand->show();
+        origin = event->pos();
+        rubberBand->setGeometry(QRect(origin, QSize()));
+        rubberBand->show();
+    }
 
     QGraphicsView::mousePressEvent(event);
 }
@@ -587,10 +627,24 @@ void MdiChild::mousePressEvent(QMouseEvent *event)
  *****************************************************************************/
 void MdiChild::mouseMoveEvent(QMouseEvent *event)
 {
-    endPoint = event->pos();
-    rubberBand->setGeometry(QRect(origin, endPoint));
+    if(!pasteRepositioning)
+    {
+        endPoint = event->pos();
+        rubberBand->setGeometry(QRect(origin, endPoint));
 
-    setAreaSelected(true);
+        setAreaSelected(true);
+    }
+
+    else if(pasteRepositioning && !pasteItemMoving)
+    {
+        QPoint pasteOrigin = this->mapFromScene(pasteItem->mapToScene(0,0));
+        QRect pasteRect = QRect(pasteOrigin, pasteItem->boundingRect().size().toSize());
+
+        if(pasteRect.contains(event->pos()))
+        {
+            pasteItemMoving = true;
+        }
+    }
 
     QGraphicsView::mouseMoveEvent(event);
 }
@@ -601,6 +655,11 @@ void MdiChild::mouseMoveEvent(QMouseEvent *event)
  *****************************************************************************/
 void MdiChild::mouseReleaseEvent(QMouseEvent *event)
 {
+    if(pasteRepositioning && !pasteItemMoving)
+        finalizePaste();
+
+    pasteItemMoving = false;
+
     QGraphicsView::mouseReleaseEvent(event);
 }
 

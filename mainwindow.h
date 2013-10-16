@@ -95,7 +95,7 @@ private slots:
 
     //Image
     void crop();
-    void imgResize();
+    void imgResize(const std::vector<double> &dialogValues);
     void rotate(const std::vector<double> &dialogValues);
     void balance(const std::vector<double> &dialogValues);
     void properties();
@@ -108,6 +108,7 @@ private slots:
     void balanceDialog();
     void rotateDialog();
     void contrastDialog();
+    void resizeDialog();
 
     //Effects
     void grayScale();
