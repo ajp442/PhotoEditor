@@ -692,8 +692,11 @@ void MainWindow::saveAs()
 #ifndef QT_NO_CLIPBOARD
 void MainWindow::cut()
 {
-//    if (activeMdiChild())
-//        activeMdiChild()->cut();
+    if (activeMdiChild())
+    {
+        activeMdiChild()->cut();
+        activeMdiChild()->commitImageChanges();
+    }
 }
 
 void MainWindow::copy()
@@ -710,7 +713,6 @@ void MainWindow::paste()
     if (activeMdiChild())
     {
         activeMdiChild()->paste();
-        activeMdiChild()->commitImageChanges();
     }
 }
 

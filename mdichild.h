@@ -100,6 +100,7 @@ public:
     void contrast(int lower, int upper);
 
     void copy();
+    void cut();
     void paste();
     void crop();
 
