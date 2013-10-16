@@ -1,5 +1,19 @@
+/**************************************************************************//**
+ * @file
+ *
+ * @brief Handles the manipulating of the image.  The image is allowed to
+ * dynamically update, so the unModifiedImage is used to update the image until
+ * a commit() occurs.  If a revert() occurs,  (i.e. the cancel buton is pressed)
+ * reset the instance to the unModifiedImage.
+ *****************************************************************************/
+
 #include "image.h"
 
+
+
+/**************************************************************************//**
+ * @brief Constructor.  The only thing it does is initiaze unModifiedImage.
+ *****************************************************************************/
 Image::Image()
 {
     unModifiedImage = NULL;

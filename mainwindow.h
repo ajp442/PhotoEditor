@@ -143,6 +143,7 @@ private slots:
 
 public slots:
     void handleZoomChanged();
+    void updateUndoRedo();
 
 signals:
     void zoomChanged();
