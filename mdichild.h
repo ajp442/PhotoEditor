@@ -108,6 +108,8 @@ public:
 
     void undo();
     void redo();
+    bool undoEnabled();
+    bool redoEnabled();
 
 public slots:
     void commitImageChanges();
