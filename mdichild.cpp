@@ -486,12 +486,12 @@ void MdiChild::copy()
 
 void MdiChild::paste()
 {
-    Image clipImage = Image();
-    clipImage.convertFromImage(clipBoard->image());
+    Image * clipImage = new Image();
+    clipImage->convertFromImage(clipBoard->image());
 
-    if(!clipImage.isNull())
+    if(!clipImage->isNull())
     {
-        pasteItem = scene()->addPixmap(clipImage);
+        pasteItem = scene()->addPixmap(*clipImage);
         pasteItem->setFlag(QGraphicsItem::ItemIsMovable);
         setModified();
         setPasteRepositioning(true);

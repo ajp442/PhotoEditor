@@ -4,12 +4,13 @@
 #include <QPixmap>
 #include <QDebug>
 #include <QPixmapCache>
+#include <QObject>
 
 class Image :public QObject, public QPixmap
 {
     Q_OBJECT
 public:
-    Image();
+    //Image();
 
     //static QImage *average(const QImage *image1, const QImage *image2, const QImage *image3);
 
