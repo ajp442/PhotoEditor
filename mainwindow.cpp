@@ -391,7 +391,7 @@ void MainWindow::createActions()
 
     imgResizeAct = new QAction(tr("Resize"), this);
     imgResizeAct->setStatusTip(tr(""));
-    connect(imgResizeAct, SIGNAL(triggered()), this, SLOT(imgResize()));
+    connect(imgResizeAct, SIGNAL(triggered()), this, SLOT(resizeDialog()));
 
     rotateAct = new QAction(tr("Rotate"), this);
     rotateAct->setStatusTip(tr(""));
@@ -650,7 +650,7 @@ void MainWindow::open()
 {
     QString caption = "Photo Edit - Select Image";
     QString defaultDir = QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
-    QString fileName = QFileDialog::getOpenFileName(this, caption, "", "images (*.png *.bmp *.jpg);;all (*.*)");
+    QString fileName = QFileDialog::getOpenFileName(this, caption, defaultDir, "images (*.png *.bmp *.jpg);;all (*.*)");
     if (!fileName.isEmpty()) {
         QMdiSubWindow *existing = findMdiChild(fileName);
         if (existing) {
@@ -760,9 +760,13 @@ void MainWindow::crop()
     }
 }
 
-void MainWindow::imgResize()
+void MainWindow::imgResize(const std::vector<double> &dialogValues)
 {
-
+    if(activeMdiChild())
+    {
+        activeMdiChild()->imgResize(dialogValues[0], dialogValues[1]);
+        statusBar()->showMessage(tr("Image resized"), 2000);
+    }
 }
 
 void MainWindow::rotate(const std::vector<double> &dialogValues)
@@ -909,6 +913,26 @@ void MainWindow::contrastDialog()
         connect(contrast_dialog, SIGNAL(valueChanged(std::vector<double>)), this, SLOT(contrast(std::vector<double>)));
         connect(contrast_dialog, SIGNAL(cancelled()), activeMdiChild(), SLOT(revertImageChanges()));
         connect(contrast_dialog, SIGNAL(accepted()), activeMdiChild(), SLOT(commitImageChanges()));
+    }
+}
+
+void MainWindow::resizeDialog()
+{
+    if(activeMdiChild())
+    {
+        int min = 1,
+            width = activeMdiChild()->scene()->width(),
+            height = activeMdiChild()->scene()->height(),
+            maxWidth = width*2,
+            maxHeight = height*2;
+
+        dialog *resize_dialog = new dialog(tr("Resize"));
+        resize_dialog->addChild("Width:", width, min, maxWidth);
+        resize_dialog->addChild("Height:", height, min, maxHeight);
+
+        connect(resize_dialog, SIGNAL(valueChanged(std::vector<double>)), this, SLOT(imgResize(std::vector<double>)));
+        connect(resize_dialog, SIGNAL(cancelled()), activeMdiChild(), SLOT(revertImageChanges()));
+        connect(resize_dialog, SIGNAL(accepted()), activeMdiChild(), SLOT(commitImageChanges()));
     }
 }
 

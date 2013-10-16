@@ -523,6 +523,23 @@ void Image::balance(int brightness, int contrastLower, int contrastUpper, double
 }
 */
 
+void Image::imgResize(int width, int height, QImage *image)
+{
+    if(image == NULL)
+    {
+        image = new QImage(*unModifiedImage);
+    }
+
+    if(image->isNull())
+    {
+        qDebug() << "Image::imgResize -> Null reference";
+        return;
+    }
+    //image.convertFromImage(image.scaled(width, height).toImage());
+    image = new QImage(image->scaled(width, height));
+    this->convertFromImage(*image);
+}
+
 void Image::commit()
 {
     delete unModifiedImage;

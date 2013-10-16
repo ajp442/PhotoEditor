@@ -413,6 +413,16 @@ void MdiChild::balance(int brightness, int contrastLower, int contrastUpper, dou
     setModified();
 }
 */
+
+void MdiChild::imgResize(int width, int height)
+{
+    image.imgResize(width, height);
+    //image.convertFromImage(image.scaled(width, height).toImage());
+    pixmap->setPixmap(image);
+    scene()->setSceneRect(pixmap->boundingRect());
+    setModified();
+}
+
 void MdiChild::commitImageChanges()
 {
     image.commit();
