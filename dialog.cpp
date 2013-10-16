@@ -60,6 +60,11 @@ dialog::dialog(QString title)
 /**************************************************************************//**
  * @brief Creates a row in the dialog containing a label, slider, and spinBox
  * based on double values.
+ *
+ * @param[in] label - Name of the label on the row
+ * @param[in] baseValue - Initial value to start the slider/spinBox at
+ * @param[in] min - Minimum value of the slider/spinBox
+ * @param[in] max - Maximum value of the slider/spinBox
  *****************************************************************************/
 void dialog::addChild(QString label, double baseValue, double min, double max)
 {
@@ -107,6 +112,11 @@ void dialog::addChild(QString label, double baseValue, double min, double max)
 /**************************************************************************//**
  * @brief Creates a row in the dialog containing a left label, a slider, and a
  * spinBox based on integers.
+ *
+ * @param[in] label - Name of the label on the row
+ * @param[in] baseValue - Initial value to start the slider/spinBox at
+ * @param[in] min - Minimum value of the slider/spinBox
+ * @param[in] max - Maximum value of the slider/spinBox
  *****************************************************************************/
 void dialog::addChild(QString label, int baseValue, int min, int max)
 {
@@ -145,6 +155,8 @@ void dialog::addChild(QString label, int baseValue, int min, int max)
 /**************************************************************************//**
  * @brief A slot that contains the spinBox that was changed.  This method updates
  * the currentValues vector based on the widget changed.
+ *
+ * @param[in] object - The spinBox of the row changed
  *****************************************************************************/
 void dialog::returnWidget(QWidget *object)
 {

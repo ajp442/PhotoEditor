@@ -101,6 +101,7 @@ public:
     void imgResize(int width, int height);
 
     void copy();
+    void cut();
     void paste();
     void crop();
 
