@@ -10,10 +10,6 @@ class Image :public QObject, public QPixmap
 {
     Q_OBJECT
 public:
-    //Image();
-
-    //static QImage *average(const QImage *image1, const QImage *image2, const QImage *image3);
-
     //Load in the image
     bool load( const QString & fileName, const char * format = 0, Qt::ImageConversionFlags flags = Qt::AutoColor );
 
@@ -31,14 +27,15 @@ public:
     void binaryThreshold(int threshold, QImage *image = NULL);
     void contrast(int lower, int upper, QImage *image = NULL);
     void imgResize(int width, int height, QImage *image = NULL);
-    //void balance(int brightness, int contrastLower, int contrastUpper, double gamma);
-signals:
-    void finished();
+    void balance(int brightness, int contrastLower, int contrastUpper, double gamma);
+
 public slots:
-    void commit();
-    void revert();
+    void commit();  //Commits the image change
+    void revert();  //Reverts the current image back to unModifiedImage
 
 private:
+    //Stores the original image until commit() is called
+    //Used to dynamically update the images
     QImage *unModifiedImage;
 };
 

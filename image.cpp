@@ -1,41 +1,6 @@
 #include "image.h"
 #include <math.h>
 
-//Image::Image()
-//{
-//}
-
-/*
-QImage* Image::average(const QImage *image1, const QImage *image2, const QImage *image3)
-{
-    if(image1 == NULL || image2 == NULL || image3 == NULL || image1->isNull() || image2->isNull() || image3->isNull())
-    {
-        qDebug() << "Image::average -> Null reference";
-        return NULL;
-    }
-
-    if(image1->width() != image2->width() != image3->width() ||
-       image1->height() != image2->height() != image3->height())
-    {
-        qDebug() << "Image::average -> Image sizes don't match";
-        //return NULL;
-    }
-
-    QImage *image = new QImage(*image1);
-    for(int x = 0; x < image1->width(); x++)
-        for(int y = 0; y < image1->height(); y++)
-        {
-            QRgb pixel1 = image1->pixel(x, y);
-            QRgb pixel2 = image2->pixel(x, y);
-            QRgb pixel3 = image3->pixel(x, y);
-            int redAvg = (qRed(pixel1) + qRed(pixel2) + qRed(pixel3)) / 3.0;
-            int greenAvg = (qGreen(pixel1) + qGreen(pixel2) + qGreen(pixel3)) / 3.0;
-            int blueAvg = (qBlue(pixel1) + qBlue(pixel2) + qBlue(pixel3)) / 3.0;
-            image->setPixel(x, y, qRgb(redAvg, greenAvg, blueAvg));
-        }
-    return image;
-}
-*/
 bool Image::load( const QString & fileName, const char * format, Qt::ImageConversionFlags flags )
 {
     QPixmapCache::clear();
@@ -488,40 +453,11 @@ void Image::contrast(int lower, int upper, QImage *image)
 
     this->convertFromImage(*image);
 }
-/*
+
 void Image::balance(int brightness, int contrastLower, int contrastUpper, double gamma)
 {
-    static int oldBrightness = -999;
-    static int oldContrastLower = -999;
-    static int oldContrastUpper = -999;
-    static double oldGamma = -999;
-    static QImage *brightImage = new QImage(*unModifiedImage);
-    static QImage *contrastImage = new QImage(*unModifiedImage);
-    static QImage *gammaImage = new QImage(*unModifiedImage);
-
-    if(brightness != oldBrightness)
-    {
-        oldBrightness = brightness;
-        this->brightness(brightness, brightImage);
-    }
-
-    if(contrastLower != oldContrastLower || contrastUpper != oldContrastUpper)
-    {
-        oldContrastLower = contrastLower;
-        oldContrastUpper = contrastUpper;
-        //this->contrast(contrastLower, contrastUpper, contrastImage);
-    }
-
-    if(oldGamma != gamma)
-    {
-        oldGamma = gamma;
-        this->gamma(gamma, gammaImage);
-    }
-
-    QImage *image = Image::average(brightImage, contrastImage, gammaImage);
-    this->convertFromImage(*image);
+    qDebug() << "Image::balance -> Not Implemented";
 }
-*/
 
 void Image::imgResize(int width, int height, QImage *image)
 {
