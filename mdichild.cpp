@@ -341,6 +341,9 @@ void MdiChild::setPasteRepositioning(bool value)
 //-----------------------------------------------------------------------------
 //                   Image Effects
 //-----------------------------------------------------------------------------
+/**************************************************************************//**
+ * @brief Invokes Image grayscale function and sets modified flag.
+ *****************************************************************************/
 void MdiChild::grayScale()
 {
     image.grayscale();
@@ -348,7 +351,9 @@ void MdiChild::grayScale()
     setModified();
 }
 
-
+/**************************************************************************//**
+ * @brief Invokes Image sharpen and sets modified flag.
+ *****************************************************************************/
 void MdiChild::sharpen()
 {
     image.sharpen();
@@ -370,6 +375,7 @@ void MdiChild::negative()
     setModified();
 }
 
+
 void MdiChild::despeckle(int threshold)
 {
     image.despeckle(threshold);
@@ -379,7 +385,9 @@ void MdiChild::despeckle(int threshold)
 
 void MdiChild::posterize()
 {
-
+    image.posterize();
+    pixmap->setPixmap(image);
+    setModified();
 }
 
 void MdiChild::edge()
@@ -388,8 +396,6 @@ void MdiChild::edge()
     pixmap->setPixmap(image);
     setModified();
 }
-
-
 
 
 void MdiChild::emboss()
@@ -438,6 +444,9 @@ void MdiChild::balance(int brightness, int contrastLower, int contrastUpper, dou
 }
 */
 
+/**************************************************************************//**
+ * @brief Resizies image, the scene holding hte image and the modified flag.
+ *****************************************************************************/
 void MdiChild::imgResize(int width, int height)
 {
     image.imgResize(width, height);
@@ -447,6 +456,11 @@ void MdiChild::imgResize(int width, int height)
     setModified();
 }
 
+/**************************************************************************//**
+ * @brief Chanes the actual instance of the image (image.commit()).
+ * Clears the redoStack and pushes the newest version of the image to the
+ * undoStack so that the change can be undone.
+ *****************************************************************************/
 void MdiChild::commitImageChanges()
 {
     image.commit();
@@ -462,6 +476,10 @@ void MdiChild::commitImageChanges()
     //scene()->setSceneRect(image.rect());
 }
 
+/**************************************************************************//**
+ * @brief Sets the stored unmodified image as the current image being
+ * displayed.
+ *****************************************************************************/
 void MdiChild::revertImageChanges()
 {
     image.revert();

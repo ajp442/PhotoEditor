@@ -63,10 +63,9 @@ Help: About
  * \li <b>Dynamically Update Image Effects</b> - Image effects are dynamically updated.
  * \li <b>Application Size and Position</b> - On close, the application will remember it's last size and position. Next time the application is run it will re-open to its last size and position.
  * \li <b>Scroll in MDI area</b> - Can scroll in the larger MDI area allowing one to edit more images.
- * \li <b>Pan</b> - User can grab and drag the image around in an MDI sub-window instead of scrolling.
- * \li <b></b>
- * \li <b></b>
- * \li <b></b>
+ * \li <b>Copy</b> - Can use cursor to select an area of the image (Rubber Band) to copy a section.
+ * \li <b>Cut</b> - Can use cursor to cut out area of image and whites out area of rubber band.
+ * \li <b>Paste</b> - Put down whatever you cut or coppied.
  * \li <b></b>
  *
  * @authors Josh Schultz, Paul Blazi, Andrew Pierson
@@ -85,11 +84,12 @@ $ PhotoEdit
    @endverbatim
  *
  * @par Compiling Instructions
- *     File needed for compiling include functions.cpp, functions.h, and
- *     prog1.cpp
+ *     Files Needed: dialog.h, image.h, mainwindow.h, mdichild.h, dialog.cpp, image.cpp, main.cpp, mainwindow.cpp, mdichild.cpp
  *
    @verbatim
-$ qmake...
+$ qmake
+$ make
+$ ./PhotoEdit
    @endverbatim
  *
  *
@@ -109,7 +109,9 @@ $ qmake...
    Oct  13, 2013  Redo and Undo.
    Oct  14, 2013  Finalized zooming features.
    Oct  14, 2013  Added doxygen style comments.
-   Oct  15, 2013  Program Due.
+   Oct  15, 2013  Finalized coppy and paste.
+   Oct  15, 2013  Polished code and submitted.
+   Oct  15, 2013  Program Due at Midnight.
    @endverbatim
  *
  *****************************************************************************/

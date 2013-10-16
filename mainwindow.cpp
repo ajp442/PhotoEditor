@@ -427,11 +427,11 @@ void MainWindow::createActions()
     negativeAct->setStatusTip(tr(""));
     connect(negativeAct, SIGNAL(triggered()), this, SLOT(negative()));
 
-    despeckleAct = new QAction(tr("Despeckle"), this);
+    despeckleAct = new QAction(tr("Despeckle (Not Implemented)"), this);
     despeckleAct->setStatusTip(tr(""));
     connect(despeckleAct, SIGNAL(triggered()), this, SLOT(despeckleDialog()));
 
-    posterizeAct = new QAction(tr("Posterize"), this);
+    posterizeAct = new QAction(tr("Posterize (Not Implemented)"), this);
     posterizeAct->setStatusTip(tr(""));
     connect(posterizeAct, SIGNAL(triggered()), this, SLOT(posterize()));
 
@@ -749,6 +749,7 @@ void MainWindow::revert()
     {
         qDebug() << "reverting";
         activeMdiChild()->loadFile();
+        activeMdiChild()->setModified(false);
     }
 
 }
@@ -844,7 +845,7 @@ void MainWindow::despeckleDialog()
     {
         int baseValue = 32, min = 0, max = 255;
 
-        dialog *despeckle_dialog = new dialog(tr("Despeckle"));
+        dialog *despeckle_dialog = new dialog(tr("Despeckle (Not Implemented)"));
         despeckle_dialog->addChild(tr("Threshold:"), baseValue, min, max);
 
         connect(despeckle_dialog, SIGNAL(valueChanged(std::vector<double>)), this, SLOT(despeckle(std::vector<double>)));
